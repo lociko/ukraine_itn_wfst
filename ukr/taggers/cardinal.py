@@ -1,0 +1,146 @@
+import pynini
+from pynini.lib import pynutil
+
+from ukr.graph_utils import (
+    NEMO_DIGIT,
+    GraphFst,
+)
+
+from ukr.utils import get_abs_path
+
+
+def get_zeros():
+    graph_zeros = pynini.invert(pynini.string_file(get_abs_path("data/numbers/nominative/cardinals_zero.tsv")))
+    graph_zeros |= pynini.invert(pynini.string_file(get_abs_path("data/numbers/genitive/cardinals_zero.tsv")))
+    graph_zeros |= pynini.invert(pynini.string_file(get_abs_path("data/numbers/dative/cardinals_zero.tsv")))
+    graph_zeros |= pynini.invert(pynini.string_file(get_abs_path("data/numbers/accusative/cardinals_zero.tsv")))
+    graph_zeros |= pynini.invert(pynini.string_file(get_abs_path("data/numbers/instrumental/cardinals_zero.tsv")))
+    graph_zeros |= pynini.invert(pynini.string_file(get_abs_path("data/numbers/prepositional/cardinals_zero.tsv")))
+
+    return graph_zeros
+
+
+def get_digits():
+    graph_digit = pynini.invert(pynini.string_file(get_abs_path("data/numbers/nominative/cardinals_digit.tsv")))
+    graph_digit |= pynini.invert(pynini.string_file(get_abs_path("data/numbers/genitive/cardinals_digit.tsv")))
+    graph_digit |= pynini.invert(pynini.string_file(get_abs_path("data/numbers/dative/cardinals_digit.tsv")))
+    graph_digit |= pynini.invert(pynini.string_file(get_abs_path("data/numbers/accusative/cardinals_digit.tsv")))
+    graph_digit |= pynini.invert(pynini.string_file(get_abs_path("data/numbers/instrumental/cardinals_digit.tsv")))
+    graph_digit |= pynini.invert(pynini.string_file(get_abs_path("data/numbers/prepositional/cardinals_digit.tsv")))
+
+    return graph_digit
+
+
+def get_teen():
+    graph_teen = pynini.invert(pynini.string_file(get_abs_path("data/numbers/nominative/cardinals_teen.tsv")))
+    graph_teen |= pynini.invert(pynini.string_file(get_abs_path("data/numbers/genitive/cardinals_teen.tsv")))
+    graph_teen |= pynini.invert(pynini.string_file(get_abs_path("data/numbers/dative/cardinals_teen.tsv")))
+    graph_teen |= pynini.invert(pynini.string_file(get_abs_path("data/numbers/accusative/cardinals_teen.tsv")))
+    graph_teen |= pynini.invert(pynini.string_file(get_abs_path("data/numbers/instrumental/cardinals_teen.tsv")))
+    graph_teen |= pynini.invert(pynini.string_file(get_abs_path("data/numbers/prepositional/cardinals_teen.tsv")))
+
+    return graph_teen
+
+
+def get_ties():
+    graph_ties = pynini.invert(pynini.string_file(get_abs_path("data/numbers/nominative/cardinals_ties.tsv")))
+    graph_ties |= pynini.invert(pynini.string_file(get_abs_path("data/numbers/genitive/cardinals_ties.tsv")))
+    graph_ties |= pynini.invert(pynini.string_file(get_abs_path("data/numbers/dative/cardinals_ties.tsv")))
+    graph_ties |= pynini.invert(pynini.string_file(get_abs_path("data/numbers/accusative/cardinals_ties.tsv")))
+    graph_ties |= pynini.invert(pynini.string_file(get_abs_path("data/numbers/instrumental/cardinals_ties.tsv")))
+    graph_ties |= pynini.invert(pynini.string_file(get_abs_path("data/numbers/prepositional/cardinals_ties.tsv")))
+
+    return graph_ties
+
+
+def get_hundred():
+    graph_ties = pynini.invert(pynini.string_file(get_abs_path("data/numbers/nominative/cardinals_hundred.tsv")))
+    graph_ties |= pynini.invert(pynini.string_file(get_abs_path("data/numbers/genitive/cardinals_hundred.tsv")))
+    graph_ties |= pynini.invert(pynini.string_file(get_abs_path("data/numbers/dative/cardinals_hundred.tsv")))
+    graph_ties |= pynini.invert(pynini.string_file(get_abs_path("data/numbers/accusative/cardinals_hundred.tsv")))
+    graph_ties |= pynini.invert(pynini.string_file(get_abs_path("data/numbers/instrumental/cardinals_hundred.tsv")))
+    graph_ties |= pynini.invert(pynini.string_file(get_abs_path("data/numbers/prepositional/cardinals_hundred.tsv")))
+
+    return graph_ties
+
+
+class CardinalFst(GraphFst):
+    """
+    Finite state transducer for classifying cardinals, e.g. 
+        -23 -> cardinal { negative: "true"  integer: "twenty three" } }
+    """
+
+    def __init__(self):
+        super().__init__(name="cardinal", kind="classify")
+
+        delete_space = pynutil.delete(" ")
+        delete_space_optional = pynini.closure(delete_space, 0, 1)
+
+        graph_zero = get_zeros()
+        graph_digit = get_digits()
+        graph_teen = get_teen()
+        graph_ties = get_ties()
+        graph_hundred = get_hundred()
+
+        # From 1 to 99
+        graph_up_to_hundred_component = pynini.union(
+            graph_teen,
+            (graph_ties | pynutil.insert("0")) + delete_space_optional + (graph_digit | pynutil.insert("0"))
+        )
+
+        graph_hundred_component = graph_hundred + delete_space_optional + graph_up_to_hundred_component
+        graph_hundred_component |= pynutil.insert("0") + graph_up_to_hundred_component
+
+        thousands = pynini.string_file(get_abs_path("data/numbers/cardinals_thousand.tsv"))
+
+        one_thousand = pynini.cross(thousands, '1') + delete_space + graph_hundred_component
+        graph_thousands = (
+            pynini.union(
+                graph_hundred_component + delete_space + pynutil.delete(thousands),
+                pynutil.insert("000", weight=0.1),
+            )
+        )
+
+        graph_millions = (
+            pynini.union(
+                graph_hundred_component + delete_space + pynutil.delete("мільйон"),
+                pynutil.insert("000", weight=0.1),
+            )
+        )
+
+        graph_billions = (
+            pynini.union(
+                graph_hundred_component + delete_space + pynutil.delete("мільярд"),
+                pynutil.insert("000", weight=0.1),
+            )
+        )
+
+        graph = pynini.union(
+            graph_billions
+            + delete_space_optional
+            + graph_millions
+            + delete_space_optional
+            + graph_thousands
+            + delete_space_optional
+            + (graph_hundred_component | pynutil.insert("000")),
+            one_thousand,
+            graph_up_to_hundred_component,
+            graph_zero,
+        )
+
+        self.graph_zeroth = graph
+        graph = graph @ pynini.union(
+            pynini.closure(pynutil.delete(pynini.union("0", ",")))
+            + pynini.difference(NEMO_DIGIT, "0")
+            + pynini.closure(pynini.union(NEMO_DIGIT, ",")),
+            "0",
+        )
+
+        self.graph_hundred_component = graph_hundred_component
+        self.graph = graph
+
+        # optional_minus_graph = pynini.closure(pynutil.insert("negative: \"true\" ") + pynutil.delete("мінус"), 0, 1)
+        #
+        # final_graph = optional_minus_graph + pynutil.insert("integer: \"") + self.graph + pynutil.insert("\"")
+
+        self.fst = graph
