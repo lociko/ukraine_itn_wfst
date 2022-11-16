@@ -30,9 +30,18 @@ def test_decimal__delimiter_with_and(spoken, expected):
 
 
 @pytest.mark.parametrize('spoken,expected', [
+    ('два і сім десятих', '2.7'),
+    ('два і сім сотих', '2.07'),
+    ('два і сім тисячних', '2.007'),
+])
+def test_decimal__optional_delimiter_with_and(spoken, expected):
+    assert apply_fst_text(spoken, graph) == expected
+
+
+@pytest.mark.parametrize('spoken,expected', [
     ('мінус пять цілих і одна десята мільйона', '-5.1 мільйона'),
-    ('пять цілих і одна десята', '5.1'),
-    ('двадцять пять цілих і одна десята', '25.1'),
+    ('пять цілих і одна десята мільярдів', '5.1 мільярдів'),
+    ('двадцять пять цілих і одна десята тисяч', '25.1 тисяч'),
 ])
 def test_decimal__delimiter_with_quantity(spoken, expected):
     assert apply_fst_text(spoken, graph) == expected

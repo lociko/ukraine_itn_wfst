@@ -47,6 +47,7 @@ class DecimalFst(GraphFst):
 
         delimiter = pynini.string_file(get_abs_path("data/numbers/decimal_delimiter.tsv"))
         delimiter = pynini.cross(delimiter, ".") + pynini.closure(delete_space + pynutil.delete("і"), 0, 1)
+        delimiter |= pynini.closure(delete_space + pynini.cross("і", "."), 0, 1)
 
         decimal_endings_map = prepare_labels_for_insertion(get_abs_path("data/numbers/decimal_endings.tsv"))
 
