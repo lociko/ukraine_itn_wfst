@@ -4,6 +4,7 @@ from pynini.lib import rewrite, pynutil
 from ukr.graph_utils import delete_extra_space, delete_space
 from ukr.taggers.cardinal import CardinalFst
 from ukr.taggers.decimals import DecimalFst
+from ukr.taggers.measure import MeasureFst
 from ukr.taggers.ordinal import OrdinalFst
 from ukr.taggers.word import WordFst
 
@@ -57,12 +58,14 @@ def apply_fst(text, fst):
 cardinal = CardinalFst()
 decimal = DecimalFst(cardinal)
 ordinal = OrdinalFst(cardinal)
+measure = MeasureFst(cardinal, decimal)
 word = WordFst()
 
 classify = (
         pynutil.add_weight(cardinal.fst, 1)
         | pynutil.add_weight(decimal.fst, 1)
         | pynutil.add_weight(ordinal.fst, 1)
+        | pynutil.add_weight(measure.fst, 1)
         | pynutil.add_weight(word.fst, 100)
 )
 

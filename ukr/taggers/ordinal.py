@@ -11,10 +11,6 @@ from ukr.utils import get_abs_path
 
 
 class OrdinalFst(GraphFst):
-    """
-    Finite state transducer for classifying cardinals, e.g. 
-        -23 -> cardinal { negative: "true"  integer: "twenty three" } }
-    """
 
     def __init__(self, cardinal: CardinalFst):
         super().__init__(name="ordinal", kind="classify")
@@ -86,11 +82,10 @@ class OrdinalFst(GraphFst):
             "0",
         )
 
-        self.graph_hundred_component = graph_hundred_component
-        self.graph = graph
+        self.graph_hundred_component = graph_hundred_component.optimize()
 
         # optional_minus_graph = pynini.closure(pynutil.insert("negative: \"true\" ") + pynutil.delete("мінус"), 0, 1)
         #
         # final_graph = optional_minus_graph + pynutil.insert("integer: \"") + self.graph + pynutil.insert("\"")
 
-        self.fst = graph
+        self.fst = graph.optimize()
