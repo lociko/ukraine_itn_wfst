@@ -3,22 +3,12 @@ from collections import defaultdict
 import pynini
 from pynini.lib import pynutil
 
-from ukr.graph_utils import GraphFst, delete_extra_space, delete_space, insert_space, NEMO_DIGIT
+from ukr.graph_utils import GraphFst, delete_space, NEMO_DIGIT
 from ukr.taggers.cardinal import CardinalFst
 from ukr.utils import get_abs_path, load_labels
 
 
 def prepare_labels_for_insertion(file_path: str) -> dict:
-    """
-    Read the file and creates a union insertion graph
-
-    Args:
-        file_path: path to a file (3 columns: a label type e.g.
-        "@@decimal_delimiter@@", a label e.g. "целого", and a weight e.g. "0.1").
-
-    Returns dictionary mapping from label type to an fst that inserts the labels with the specified weights.
-
-    """
     labels = load_labels(file_path)
     mapping = defaultdict(list)
     for k, v in labels:
@@ -30,15 +20,6 @@ def prepare_labels_for_insertion(file_path: str) -> dict:
 
 
 class DecimalFst(GraphFst):
-    """
-    Finite state transducer for classifying decimal
-        e.g. "минус три целых две десятых" -> decimal { negative: "true" integer_part: "3," fractional_part: "2" }
-
-    Args:
-        tn_decimal: Text normalization Decimal graph
-        deterministic: if True will provide a single transduction option,
-            for False multiple transduction are generated (used for audio-based normalization)
-    """
 
     def __init__(self, cardinal: CardinalFst, ):
         super().__init__(name="decimal", kind="classify")

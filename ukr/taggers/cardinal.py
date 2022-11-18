@@ -65,10 +65,6 @@ def get_hundred():
 
 
 class CardinalFst(GraphFst):
-    """
-    Finite state transducer for classifying cardinals, e.g. 
-        -23 -> cardinal { negative: "true"  integer: "twenty three" } }
-    """
 
     def __init__(self):
         super().__init__(name="cardinal", kind="classify")
