@@ -24,11 +24,9 @@ class DecimalFst(GraphFst):
     def __init__(self, cardinal: CardinalFst, ):
         super().__init__(name="decimal", kind="classify")
 
-        optional_graph_negative = pynini.closure(pynini.cross("мінус", "-") + delete_space, 0, 1)
-
         delimiter = pynini.string_file(get_abs_path("data/numbers/decimal_delimiter.tsv"))
-        delimiter = pynini.cross(delimiter, ".") + pynini.closure(delete_space + pynutil.delete("і"), 0, 1)
-        delimiter |= pynini.closure(delete_space + pynini.cross("і", "."), 0, 1)
+        delimiter = pynini.cross(delimiter, " ") + pynini.closure(delete_space + pynutil.delete("і"), 0, 1)
+        delimiter |= pynini.closure(delete_space + pynini.cross("і", " "), 0, 1)
 
         decimal_endings_map = prepare_labels_for_insertion(get_abs_path("data/numbers/decimal_endings.tsv"))
 
@@ -53,14 +51,17 @@ class DecimalFst(GraphFst):
         graph_integer_part = cardinal.graph
 
         quantity = pynini.string_file(get_abs_path("data/numbers/quantity.tsv"))
-        # quantity = pynutil.insert(" quantity: \"") + quantity + pynutil.insert("\"")
+        quantity = pynutil.insert(" quantity: \"") + quantity + pynutil.insert("\"")
         optional_graph_quantity = pynini.closure(" " + quantity, 0, 1)
 
+        graph_fractional = pynutil.insert("fractional_part: \"") + graph_fractional_part + pynutil.insert("\"")
+        graph_integer = pynutil.insert("integer_part: \"") + graph_integer_part + pynutil.insert("\"")
 
-        self.final_graph_wo_sign = graph_integer_part + delete_space + delimiter + delete_space + graph_fractional_part
-        self.final_graph_wo_sign += optional_graph_quantity
+        graph = graph_integer + delete_space + delimiter + delete_space + graph_fractional + optional_graph_quantity
+        graph |= graph_integer + delete_space + quantity
 
-        final_graph = optional_graph_negative + self.final_graph_wo_sign
+        optional_minus_graph = pynini.closure(pynutil.insert("negative: \"true\" ") + pynutil.delete("мінус"), 0, 1)
 
-        # final_graph = self.add_tokens(final_graph)
+        final_graph = optional_minus_graph + graph
+        final_graph = self.add_tokens(final_graph)
         self.fst = final_graph.optimize()

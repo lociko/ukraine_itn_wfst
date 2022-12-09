@@ -133,10 +133,12 @@ class CardinalFst(GraphFst):
         )
 
         self.graph_hundred_component = graph_hundred_component
+
+        self.graph_up_to_hundred_component = graph_up_to_hundred_component
         self.graph = graph
 
-        # optional_minus_graph = pynini.closure(pynutil.insert("negative: \"true\" ") + pynutil.delete("мінус"), 0, 1)
-        #
-        # final_graph = optional_minus_graph + pynutil.insert("integer: \"") + self.graph + pynutil.insert("\"")
+        optional_minus_graph = pynini.closure(pynutil.insert("negative: \"true\" ") + pynutil.delete("мінус"), 0, 1)
 
-        self.fst = graph
+        final_graph = optional_minus_graph + pynutil.insert("integer: \"") + self.graph + pynutil.insert("\"")
+        final_graph = self.add_tokens(final_graph)
+        self.fst = final_graph.optimize()

@@ -2,9 +2,12 @@ import pynini
 from pynini.lib import rewrite, pynutil
 
 from ukr.graph_utils import delete_extra_space, delete_space
-from ukr.taggers.cardinal import CardinalFst
-from ukr.taggers.decimals import DecimalFst
+from ukr.taggers.cardinal import CardinalFst as TCardinalFst
+from ukr.verbalizers.cardinal import CardinalFst as VCardinalFst
+from ukr.taggers.decimal import DecimalFst as TDecimalFst
+from ukr.verbalizers.decimal import DecimalFst as VDecimalFst
 from ukr.taggers.measure import MeasureFst
+from ukr.taggers.money import MoneyFst
 from ukr.taggers.ordinal import OrdinalFst
 from ukr.taggers.word import WordFst
 
@@ -43,33 +46,22 @@ def apply_fst_text(text, fst):
     return tagged_text
 
 
-def apply_fst(text, fst):
-    """ Given a string input, returns the output string
-    produced by traversing the path with lowest weight.
-    If no valid path accepts input string, returns an
-    error.
-    """
-    try:
-        print(text, '---->', rewrite.rewrites(text, fst))
-    except Exception as ex:
-        print(f"'{text}' ----> Error: No valid output with given input: {ex}")
-
-
-cardinal = CardinalFst()
-decimal = DecimalFst(cardinal)
-ordinal = OrdinalFst(cardinal)
-measure = MeasureFst(cardinal, decimal)
+tCardinalFst = TCardinalFst()
+tDecimalFst = TDecimalFst(tCardinalFst)
+ordinal = OrdinalFst(tCardinalFst)
+measure = MeasureFst(tCardinalFst, tDecimalFst)
+money = MoneyFst(tCardinalFst, tDecimalFst)
 word = WordFst()
 
-classify = (
-        pynutil.add_weight(cardinal.fst, 1)
-        | pynutil.add_weight(decimal.fst, 1)
-        | pynutil.add_weight(ordinal.fst, 1)
-        | pynutil.add_weight(measure.fst, 1)
-        | pynutil.add_weight(word.fst, 100)
-)
+vCardinalFst = VCardinalFst()
+vDecimalFst = VDecimalFst()
 
-token = classify
+classify_and_verbalize = (
+        pynutil.add_weight(pynini.compose(tCardinalFst.fst, vCardinalFst.fst), 1)
+        | pynutil.add_weight(pynini.compose(tDecimalFst.fst, vDecimalFst.fst), 1)
+).optimize()
+
+token = classify_and_verbalize
 
 graph = token + pynini.closure(delete_extra_space + token)
 graph = delete_space + graph + delete_space
