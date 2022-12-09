@@ -59,7 +59,7 @@ tMeasureFst = TMeasureFst(tCardinalFst, tDecimalFst)
 tWordFst = TWordFst()
 
 # ------------------------------------------
-# Verbalizes
+# verbalizers
 # ------------------------------------------
 vCardinalFst = VCardinalFst()
 vDecimalFst = VDecimalFst()
@@ -68,7 +68,7 @@ vMeasureFst = VMeasureFst(vCardinalFst, vDecimalFst)
 vWordFst = VWordFst()
 
 # ------------------------------------------
-# Taggers and verbalizes composition
+# Taggers and verbalizers composition
 # ------------------------------------------
 single_token = (
         pynutil.add_weight(pynini.compose(tCardinalFst.fst, vCardinalFst.fst), 1)
