@@ -3,12 +3,15 @@ from pynini.lib import pynutil
 
 from ukr.graph_utils import delete_extra_space, delete_space
 from ukr.taggers.cardinal import CardinalFst as TCardinalFst
-from ukr.verbalizers.cardinal import CardinalFst as VCardinalFst
 from ukr.taggers.decimal import DecimalFst as TDecimalFst
-from ukr.verbalizers.decimal import DecimalFst as VDecimalFst
 from ukr.taggers.ordinal import OrdinalFst as TOrdinalFst
-from ukr.verbalizers.ordinal import OrdinalFst as VOrdinalFst
+from ukr.taggers.measure import MeasureFst as TMeasureFst
 from ukr.taggers.word import WordFst as TWordFst
+
+from ukr.verbalizers.cardinal import CardinalFst as VCardinalFst
+from ukr.verbalizers.decimal import DecimalFst as VDecimalFst
+from ukr.verbalizers.ordinal import OrdinalFst as VOrdinalFst
+from ukr.verbalizers.measure import MeasureFst as VMeasureFst
 from ukr.verbalizers.word import WordFst as VWordFst
 
 
@@ -49,17 +52,20 @@ def apply_fst_text(text, fst):
 tCardinalFst = TCardinalFst()
 tDecimalFst = TDecimalFst(tCardinalFst)
 tOrdinalFst = TOrdinalFst(tCardinalFst)
+tMeasureFst = TMeasureFst(tCardinalFst, tDecimalFst)
 tWordFst = TWordFst()
 
 vCardinalFst = VCardinalFst()
 vDecimalFst = VDecimalFst()
 vOrdinalFst = VOrdinalFst()
+vMeasureFst = VMeasureFst(vCardinalFst, vDecimalFst)
 vWordFst = VWordFst()
 
 classify_and_verbalize = (
         pynutil.add_weight(pynini.compose(tCardinalFst.fst, vCardinalFst.fst), 1)
         | pynutil.add_weight(pynini.compose(tDecimalFst.fst, vDecimalFst.fst), 1)
         | pynutil.add_weight(pynini.compose(tOrdinalFst.fst, vOrdinalFst.fst), 1)
+        | pynutil.add_weight(pynini.compose(tMeasureFst.fst, vMeasureFst.fst), 1)
         | pynutil.add_weight(pynini.compose(tWordFst.fst, vWordFst.fst), 100)
 ).optimize()
 
