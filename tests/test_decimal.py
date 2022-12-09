@@ -1,6 +1,6 @@
 import pytest
 
-from ukr.wfst import apply_fst_text, graph
+from ukr.wfst import apply_fst_text, classify_and_verbalize, tDecimalFst
 
 
 @pytest.mark.parametrize('spoken,expected', [
@@ -17,7 +17,7 @@ from ukr.wfst import apply_fst_text, graph
     ('тридцять цілих одна сотих', '30.01'),
 ])
 def test_decimal(spoken, expected):
-    assert apply_fst_text(spoken, graph) == expected
+    assert apply_fst_text(spoken, classify_and_verbalize) == expected
 
 
 @pytest.mark.parametrize('spoken,expected', [
@@ -26,7 +26,7 @@ def test_decimal(spoken, expected):
     ('двадцять пять цілих і одна десята', '25.1'),
 ])
 def test_decimal__delimiter_with_and(spoken, expected):
-    assert apply_fst_text(spoken, graph) == expected
+    assert apply_fst_text(spoken, classify_and_verbalize) == expected
 
 
 @pytest.mark.parametrize('spoken,expected', [
@@ -35,13 +35,24 @@ def test_decimal__delimiter_with_and(spoken, expected):
     ('два і сім тисячних', '2.007'),
 ])
 def test_decimal__optional_delimiter_with_and(spoken, expected):
-    assert apply_fst_text(spoken, graph) == expected
+    assert apply_fst_text(spoken, classify_and_verbalize) == expected
 
 
 @pytest.mark.parametrize('spoken,expected', [
     ('мінус пять цілих і одна десята мільйона', '-5.1 мільйона'),
     ('пять цілих і одна десята мільярдів', '5.1 мільярдів'),
     ('двадцять пять цілих і одна десята тисяч', '25.1 тисяч'),
+    ('двадцять пять тисяч', '25 тисяч'),
 ])
 def test_decimal__delimiter_with_quantity(spoken, expected):
-    assert apply_fst_text(spoken, graph) == expected
+    assert apply_fst_text(spoken, classify_and_verbalize) == expected
+
+
+@pytest.mark.parametrize('spoken,expected', [
+    ('мінус пять цілих і одна десята мільйона', 'decimal { negative: "true" integer_part: "5" fractional_part: "1"  quantity: "мільйона" }'),
+    ('двадцять пять тисяч', 'decimal { integer_part: "25" quantity: "тисяч" }'),
+    ('два і сім десятих', 'decimal { integer_part: "2" fractional_part: "7" }'),
+    ('мінус пять цілих і дві десятих', 'decimal { negative: "true" integer_part: "5" fractional_part: "2" }'),
+])
+def test_decimal__delimiter_with_quantity__only_tagger(spoken, expected):
+    assert apply_fst_text(spoken, tDecimalFst.fst) == expected
