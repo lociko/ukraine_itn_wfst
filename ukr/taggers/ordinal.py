@@ -62,6 +62,7 @@ class OrdinalFst(GraphFst):
             )
         )
 
+        # TODO: add other cardinalities like trillions, etc.
         graph = pynini.union(
             graph_billions
             + delete_space_optional

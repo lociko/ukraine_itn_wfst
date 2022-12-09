@@ -49,19 +49,28 @@ def apply_fst_text(text, fst):
     return tagged_text
 
 
+# ------------------------------------------
+# Taggers
+# ------------------------------------------
 tCardinalFst = TCardinalFst()
 tDecimalFst = TDecimalFst(tCardinalFst)
 tOrdinalFst = TOrdinalFst(tCardinalFst)
 tMeasureFst = TMeasureFst(tCardinalFst, tDecimalFst)
 tWordFst = TWordFst()
 
+# ------------------------------------------
+# Verbalizes
+# ------------------------------------------
 vCardinalFst = VCardinalFst()
 vDecimalFst = VDecimalFst()
 vOrdinalFst = VOrdinalFst()
 vMeasureFst = VMeasureFst(vCardinalFst, vDecimalFst)
 vWordFst = VWordFst()
 
-classify_and_verbalize = (
+# ------------------------------------------
+# Taggers and verbalizes composition
+# ------------------------------------------
+single_token = (
         pynutil.add_weight(pynini.compose(tCardinalFst.fst, vCardinalFst.fst), 1)
         | pynutil.add_weight(pynini.compose(tDecimalFst.fst, vDecimalFst.fst), 1)
         | pynutil.add_weight(pynini.compose(tOrdinalFst.fst, vOrdinalFst.fst), 1)
@@ -69,7 +78,7 @@ classify_and_verbalize = (
         | pynutil.add_weight(pynini.compose(tWordFst.fst, vWordFst.fst), 100)
 ).optimize()
 
-token = classify_and_verbalize
-
-graph = token + pynini.closure(delete_extra_space + token)
+# Final Inverse Text Normalization WFST graph
+# use this to produce written form of numbers, dates, etc.
+graph = single_token + pynini.closure(delete_extra_space + single_token)
 graph = delete_space + graph + delete_space

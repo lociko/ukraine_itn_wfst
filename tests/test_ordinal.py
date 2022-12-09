@@ -15,5 +15,5 @@ from ukr.wfst import apply_fst_text, graph
     ('дві тисячі двадцять другого', '2022'),
     ('дві тисячі девятнадцятого', '2019'),
 ])
-def test_cardinal(spoken, expected):
+def test_ordinal(spoken, expected):
     assert apply_fst_text(spoken, graph) == expected
