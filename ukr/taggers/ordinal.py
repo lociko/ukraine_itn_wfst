@@ -75,17 +75,13 @@ class OrdinalFst(GraphFst):
         )
 
         self.graph_zeroth = graph
-        graph = graph @ pynini.union(
+        self.graph = graph @ pynini.union(
             pynini.closure(pynutil.delete(pynini.union("0", ",")))
             + pynini.difference(NEMO_DIGIT, "0")
             + pynini.closure(pynini.union(NEMO_DIGIT, ",")),
             "0",
         )
 
-        self.graph_hundred_component = graph_hundred_component.optimize()
-
-        # optional_minus_graph = pynini.closure(pynutil.insert("negative: \"true\" ") + pynutil.delete("мінус"), 0, 1)
-        #
-        # final_graph = optional_minus_graph + pynutil.insert("integer: \"") + self.graph + pynutil.insert("\"")
-
-        self.fst = graph.optimize()
+        final_graph = pynutil.insert("integer: \"") + self.graph + pynutil.insert("\"")
+        final_graph = self.add_tokens(final_graph)
+        self.fst = final_graph

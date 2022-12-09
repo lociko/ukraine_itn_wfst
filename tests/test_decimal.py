@@ -1,6 +1,6 @@
 import pytest
 
-from ukr.wfst import apply_fst_text, classify_and_verbalize, tDecimalFst
+from ukr.wfst import apply_fst_text, graph, tDecimalFst
 
 
 @pytest.mark.parametrize('spoken,expected', [
@@ -17,7 +17,7 @@ from ukr.wfst import apply_fst_text, classify_and_verbalize, tDecimalFst
     ('тридцять цілих одна сотих', '30.01'),
 ])
 def test_decimal(spoken, expected):
-    assert apply_fst_text(spoken, classify_and_verbalize) == expected
+    assert apply_fst_text(spoken, graph) == expected
 
 
 @pytest.mark.parametrize('spoken,expected', [
@@ -26,7 +26,7 @@ def test_decimal(spoken, expected):
     ('двадцять пять цілих і одна десята', '25.1'),
 ])
 def test_decimal__delimiter_with_and(spoken, expected):
-    assert apply_fst_text(spoken, classify_and_verbalize) == expected
+    assert apply_fst_text(spoken, graph) == expected
 
 
 @pytest.mark.parametrize('spoken,expected', [
@@ -35,7 +35,7 @@ def test_decimal__delimiter_with_and(spoken, expected):
     ('два і сім тисячних', '2.007'),
 ])
 def test_decimal__optional_delimiter_with_and(spoken, expected):
-    assert apply_fst_text(spoken, classify_and_verbalize) == expected
+    assert apply_fst_text(spoken, graph) == expected
 
 
 @pytest.mark.parametrize('spoken,expected', [
@@ -45,7 +45,7 @@ def test_decimal__optional_delimiter_with_and(spoken, expected):
     ('двадцять пять тисяч', '25 тисяч'),
 ])
 def test_decimal__delimiter_with_quantity(spoken, expected):
-    assert apply_fst_text(spoken, classify_and_verbalize) == expected
+    assert apply_fst_text(spoken, graph) == expected
 
 
 @pytest.mark.parametrize('spoken,expected', [
