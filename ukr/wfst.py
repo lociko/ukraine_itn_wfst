@@ -82,5 +82,3 @@ single_token = (
 # use this to produce written form of numbers, dates, etc.
 graph = single_token + pynini.closure(delete_extra_space + single_token)
 graph = delete_space + graph + delete_space
-
-print(apply_fst_text("ти народилася двадцять першого числа чи 28", graph))

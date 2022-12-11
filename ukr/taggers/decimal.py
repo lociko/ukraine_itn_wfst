@@ -25,8 +25,9 @@ class DecimalFst(GraphFst):
         super().__init__(name="decimal", kind="classify")
 
         delimiter = pynini.string_file(get_abs_path("data/numbers/decimal_delimiter.tsv"))
+
         delimiter = pynini.cross(delimiter, " ") + pynini.closure(delete_space + pynutil.delete("і"), 0, 1)
-        delimiter |= pynini.closure(delete_space + pynini.cross("і", " "), 0, 1)
+        delimiter |= pynini.closure(delete_space + pynini.cross("і", " "), 1, 1)
 
         decimal_endings_map = prepare_labels_for_insertion(get_abs_path("data/numbers/decimal_endings.tsv"))
 
@@ -59,6 +60,7 @@ class DecimalFst(GraphFst):
 
         graph = graph_integer + delete_space + delimiter + delete_space + graph_fractional + optional_graph_quantity
         graph |= graph_integer + delete_space + quantity
+        graph |= pynutil.insert("integer_part: \"0\"") + graph_fractional
 
         optional_minus_graph = pynini.closure(pynutil.insert("negative: \"true\" ") + pynutil.delete("мінус"), 0, 1)
 

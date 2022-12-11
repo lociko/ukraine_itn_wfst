@@ -39,6 +39,19 @@ def test_decimal__optional_delimiter_with_and(spoken, expected):
 
 
 @pytest.mark.parametrize('spoken,expected', [
+    ('сім десятих', '0.7'),
+    ('сім сотих', '0.07'),
+    ('сім тисячних', '0.007'),
+    ('сто двадцять сім тисячних', '0.127'),
+    ('сорок одна тисячних', '0.041'),
+    ('одинадцять тисячних', '0.011'),
+    ('точність приладу рівна двом сотим', 'точність приладу рівна 0.02'),
+])
+def test_decimal__only_fractional(spoken, expected):
+    assert apply_fst_text(spoken, graph) == expected
+
+
+@pytest.mark.parametrize('spoken,expected', [
     ('мінус пять цілих і одна десята мільйона', '-5.1 мільйона'),
     ('пять цілих і одна десята мільярдів', '5.1 мільярдів'),
     ('двадцять пять цілих і одна десята тисяч', '25.1 тисяч'),
