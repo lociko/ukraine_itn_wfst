@@ -41,6 +41,7 @@ class MoneyFst(GraphFst):
         super().__init__(name="money", kind="classify")
 
         integer_graph = pynutil.insert("integer_part: \"") + cardinal.graph + pynutil.insert("\" ")
+        decimal_graph = decimal.graph
 
         # сім копійок -> 0.07
         # двадцять сім копійок -> 0.27
@@ -68,6 +69,10 @@ class MoneyFst(GraphFst):
             integer_part = pynutil.insert("integer_part: \"0\" ")
             fractional_part = fractional_graph + delete_space + pynutil.delete(minor)
             unit = integer_part + fractional_part
+            units.append(pynutil.insert(f"currency: \"{signature}\" ") + unit)
+
+            # decimal: two point one million dollars, etc.
+            unit = decimal_graph + delete_space + pynutil.delete(major)
             units.append(pynutil.insert(f"currency: \"{signature}\" ") + unit)
 
         final_graph = pynini.union(*units)
