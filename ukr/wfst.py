@@ -1,17 +1,19 @@
 import pynini
-from pynini.lib import pynutil
+from pynini.lib import pynutil, rewrite
 
 from ukr.graph_utils import delete_extra_space, delete_space
 from ukr.taggers.cardinal import CardinalFst as TCardinalFst
 from ukr.taggers.decimal import DecimalFst as TDecimalFst
 from ukr.taggers.ordinal import OrdinalFst as TOrdinalFst
 from ukr.taggers.measure import MeasureFst as TMeasureFst
+from ukr.taggers.money import MoneyFst as TMoneyFst
 from ukr.taggers.word import WordFst as TWordFst
 
 from ukr.verbalizers.cardinal import CardinalFst as VCardinalFst
 from ukr.verbalizers.decimal import DecimalFst as VDecimalFst
 from ukr.verbalizers.ordinal import OrdinalFst as VOrdinalFst
 from ukr.verbalizers.measure import MeasureFst as VMeasureFst
+from ukr.verbalizers.money import MoneyFst as VMoneyFst
 from ukr.verbalizers.word import WordFst as VWordFst
 
 
@@ -56,15 +58,17 @@ tCardinalFst = TCardinalFst()
 tDecimalFst = TDecimalFst(tCardinalFst)
 tOrdinalFst = TOrdinalFst(tCardinalFst)
 tMeasureFst = TMeasureFst(tCardinalFst, tDecimalFst)
+tMoneyFst = TMoneyFst(tCardinalFst, tDecimalFst)
 tWordFst = TWordFst()
 
 # ------------------------------------------
-# verbalizers
+# Verbalizers
 # ------------------------------------------
 vCardinalFst = VCardinalFst()
 vDecimalFst = VDecimalFst()
 vOrdinalFst = VOrdinalFst()
 vMeasureFst = VMeasureFst(vCardinalFst, vDecimalFst)
+vMoneyFst = VMoneyFst(vDecimalFst)
 vWordFst = VWordFst()
 
 # ------------------------------------------
@@ -75,6 +79,7 @@ single_token = (
         | pynutil.add_weight(pynini.compose(tDecimalFst.fst, vDecimalFst.fst), 1)
         | pynutil.add_weight(pynini.compose(tOrdinalFst.fst, vOrdinalFst.fst), 1)
         | pynutil.add_weight(pynini.compose(tMeasureFst.fst, vMeasureFst.fst), 1)
+        | pynutil.add_weight(pynini.compose(tMoneyFst.fst, vMoneyFst.fst), 1)
         | pynutil.add_weight(pynini.compose(tWordFst.fst, vWordFst.fst), 100)
 ).optimize()
 
