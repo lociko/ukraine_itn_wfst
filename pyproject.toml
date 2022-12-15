@@ -1,0 +1,19 @@
+[project]
+name = "ukr_itn"
+version = "0.1.1"
+authors = [
+    { name = "Vasyl Spachynskyi", email = "vspachyn@gmail.com" },
+]
+description = "WFST for Ukrainian Inverse Text Normalization (ITN) based on NVIDIA NeMo and Pynini"
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Natural Language :: Ukrainian",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/lociko/ukraine_itn_wfst"
+"Bug Tracker" = "https://github.com/lociko/ukraine_itn_wfst/issues"

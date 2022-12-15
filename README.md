@@ -2,6 +2,12 @@
 
 Simple WFST for Ukrainian ITN based on NVIDIA NeMo and Pynini
 
+## Installation
+
+```shell
+pip install ukr-itn==0.1.1
+```
+
 ## Usage
 
 ```python
