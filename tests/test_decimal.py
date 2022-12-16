@@ -1,6 +1,8 @@
 import pytest
 
-from ukr.wfst import apply_fst_text, graph, tDecimalFst
+from ukr.taggers.cardinal import CardinalFst
+from ukr.taggers.decimal import DecimalFst
+from ukr.wfst import apply_fst_text, graph
 
 
 @pytest.mark.parametrize('spoken,expected', [
@@ -68,4 +70,7 @@ def test_decimal__delimiter_with_quantity(spoken, expected):
     ('мінус пять цілих і дві десятих', 'decimal { negative: "true" integer_part: "5" fractional_part: "2" }'),
 ])
 def test_decimal__delimiter_with_quantity__only_tagger(spoken, expected):
+    tCardinalFst = CardinalFst()
+    tDecimalFst = DecimalFst(cardinal=tCardinalFst)
+
     assert apply_fst_text(spoken, tDecimalFst.fst) == expected

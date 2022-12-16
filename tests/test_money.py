@@ -1,6 +1,6 @@
 import pytest
 
-from ukr.wfst import apply_fst_text, graph, tMoneyFst
+from ukr.wfst import apply_fst_text, graph
 
 
 @pytest.mark.parametrize('spoken,expected', [

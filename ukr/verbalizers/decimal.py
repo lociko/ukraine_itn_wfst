@@ -40,6 +40,7 @@ class DecimalFst(GraphFst):
         optional_quantity = pynini.closure(pynutil.insert(" ") + quantity + delete_space, 0, 1)
         graph = optional_integer + optional_fractional + optional_quantity
         self.numbers = graph
+
         graph = optionl_sign + graph
         delete_tokens = self.delete_tokens(graph)
         self.fst = delete_tokens.optimize()

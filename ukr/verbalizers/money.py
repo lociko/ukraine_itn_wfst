@@ -16,11 +16,14 @@ class MoneyFst(GraphFst):
 
     def __init__(self, decimal: DecimalFst):
         super().__init__(name="money", kind="verbalize")
+
+        units = pynini.union("$", "₴")
+
         unit = (
                 pynutil.delete("currency:")
                 + delete_space
                 + pynutil.delete("\"")
-                + pynini.closure(NEMO_CHAR, 1)
+                + pynini.closure(units, 1)
                 + pynutil.delete("\"")
         )
         graph = unit + delete_space + decimal.numbers
