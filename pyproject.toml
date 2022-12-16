@@ -1,6 +1,6 @@
 [project]
 name = "ukr_itn"
-version = "0.1.1"
+version = "0.1.2"
 authors = [
     { name = "Vasyl Spachynskyi", email = "vspachyn@gmail.com" },
 ]

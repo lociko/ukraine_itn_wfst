@@ -4,6 +4,9 @@ from ukr.verbalizers.decimal import DecimalFst
 from ukr.verbalizers.measure import MeasureFst
 from ukr.verbalizers.money import MoneyFst
 from ukr.verbalizers.ordinal import OrdinalFst
+from pynini.lib import pynutil
+
+from ukr.verbalizers.word import WordFst
 
 
 class VerbalizeFst(GraphFst):
@@ -11,20 +14,33 @@ class VerbalizeFst(GraphFst):
     def __init__(self):
         super().__init__(name="verbalize", kind="verbalize")
 
-        cardinal = CardinalFst()
-        cardinal_graph = cardinal.fst
-        ordinal_graph = OrdinalFst().fst
-        decimal = DecimalFst()
-        decimal_graph = decimal.fst
-        measure_graph = MeasureFst(decimal=decimal, cardinal=cardinal).fst
-        money_graph = MoneyFst(decimal=decimal).fst
+        self.cardinal = CardinalFst()
+        self.decimal = DecimalFst()
+        self.ordinal = OrdinalFst()
+        self.measure = MeasureFst(decimal=self.decimal, cardinal=self.cardinal)
+        self.money = MoneyFst(decimal=self.decimal)
+        self.word = WordFst()
 
         graph = (
-                money_graph
-                | measure_graph
-                | ordinal_graph
-                | decimal_graph
-                | cardinal_graph
+                self.money.fst
+                | self.measure.fst
+                | self.ordinal.fst
+                | self.decimal.fst
+                | self.cardinal.fst
         )
+        graph |= pynutil.add_weight(self.word.fst, 100)
 
         self.fst = graph
+
+    def as_json(self):
+        graph = (
+                self.money.as_json()
+                | self.measure.as_json()
+                | self.ordinal.as_json()
+                | self.decimal.as_json()
+                | self.cardinal.as_json()
+        )
+
+        graph |= pynutil.add_weight(self.word.as_json(), 100)
+
+        return graph

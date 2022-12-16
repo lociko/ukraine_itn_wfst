@@ -14,9 +14,24 @@ class VerbalizeFinalFst(GraphFst):
 
     def __init__(self):
         super().__init__(name="verbalize_final", kind="verbalize")
-        verbalize = VerbalizeFst().fst
-        word = WordFst().fst
-        types = verbalize | word
+
+        self.verbalize = VerbalizeFst()
+
+        graph = (
+                pynutil.delete("tokens")
+                + delete_space
+                + pynutil.delete("{")
+                + delete_space
+                + self.verbalize.fst
+                + delete_space
+                + pynutil.delete("}")
+        )
+        graph = delete_space + pynini.closure(graph + delete_extra_space) + graph + delete_space
+
+        self.fst = graph
+
+    def as_json(self):
+        types = self.verbalize.as_json()
         graph = (
                 pynutil.delete("tokens")
                 + delete_space
@@ -26,5 +41,7 @@ class VerbalizeFinalFst(GraphFst):
                 + delete_space
                 + pynutil.delete("}")
         )
-        graph = delete_space + pynini.closure(graph + delete_extra_space) + graph + delete_space
-        self.fst = graph
+
+        graph = delete_space + pynini.closure(graph + pynutil.insert(",") + delete_extra_space) + graph + delete_space
+        graph = pynutil.insert(pynini.escape("[")) + graph + pynutil.insert(pynini.escape("]"))
+        return graph

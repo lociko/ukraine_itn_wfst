@@ -194,3 +194,10 @@ class GraphFst:
             + pynutil.delete("}")
         )
         return res @ pynini.cdrewrite(pynini.cross(u"\u00A0", " "), "", "", NEMO_SIGMA)
+
+    def as_json(self):
+        return pynutil.insert('{') \
+               + pynutil.insert(f'"{self.name}": ') \
+               + pynutil.insert('"') \
+               + self.fst \
+               + pynutil.insert('"}')

@@ -42,3 +42,4 @@ classifyFst = ClassifyFst()
 verbalizeFinalFst = VerbalizeFinalFst()
 
 graph = pynini.compose(classifyFst.fst, verbalizeFinalFst.fst).optimize()
+json_graph = pynini.compose(classifyFst.fst, verbalizeFinalFst.as_json()).optimize()
