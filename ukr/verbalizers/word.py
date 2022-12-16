@@ -16,4 +16,5 @@ class WordFst(GraphFst):
         char = pynutil.delete("name:") + delete_space + pynutil.delete("\"") + chars + pynutil.delete("\"")
         graph = char @ pynini.cdrewrite(pynini.cross(u"\u00A0", " "), "", "", NEMO_SIGMA)
 
+        graph = self.delete_tokens(graph)
         self.fst = graph.optimize()
