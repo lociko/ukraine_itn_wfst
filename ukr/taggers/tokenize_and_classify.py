@@ -7,7 +7,6 @@ from ukr.taggers.decimal import DecimalFst
 from ukr.taggers.measure import MeasureFst
 from ukr.taggers.money import MoneyFst
 from ukr.taggers.ordinal import OrdinalFst
-from ukr.taggers.punctuation import PunctuationFst
 from ukr.taggers.word import WordFst
 
 
@@ -28,7 +27,6 @@ class ClassifyFst(GraphFst):
         measure_graph = MeasureFst(cardinal=cardinal, decimal=decimal).fst
         word_graph = WordFst().fst
         money_graph = MoneyFst(cardinal=cardinal, decimal=decimal).fst
-        punct_graph = PunctuationFst().fst
 
         classify = (
                 pynutil.add_weight(decimal_graph, 1.1)
@@ -41,12 +39,7 @@ class ClassifyFst(GraphFst):
 
         token = pynutil.insert("tokens { ") + classify + pynutil.insert(" }")
 
-        punct = pynutil.insert("tokens { ") + pynutil.add_weight(punct_graph, weight=1.1) + pynutil.insert(" }")
-        token_plus_punct = (
-                pynini.closure(punct + pynutil.insert(" ")) + token + pynini.closure(pynutil.insert(" ") + punct)
-        )
-
-        graph = token_plus_punct + pynini.closure(delete_extra_space + token_plus_punct)
+        graph = token + pynini.closure(delete_extra_space + token)
         graph = delete_space + graph + delete_space
 
         self.fst = graph.optimize()
