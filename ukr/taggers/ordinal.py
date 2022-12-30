@@ -26,6 +26,7 @@ class OrdinalFst(GraphFst):
         graph_ordinal_teen = pynini.invert(pynini.string_file(get_abs_path("data/numbers/ordinal/ordinal_teen.tsv")))
         graph_ordinal_ties = pynini.invert(pynini.string_file(get_abs_path("data/numbers/ordinal/ordinal_ties.tsv")))
         graph_ordinal_hundred = pynini.invert(pynini.string_file(get_abs_path("data/numbers/ordinal/ordinal_hundred.tsv")))
+        graph_ordinal_thousand = pynini.invert(pynini.string_file(get_abs_path("data/numbers/ordinal/ordinal_thousand.tsv")))
 
         # From 1 to 99
         graph_up_to_hundred_component = pynini.union(
@@ -65,6 +66,9 @@ class OrdinalFst(GraphFst):
             )
         )
 
+        # Like: "двох тисячний рік" -> "2000-й рік".
+        ordinal_thousand = cardinal.graph_hundred_component + delete_space + graph_ordinal_thousand
+
         # TODO: add other cardinalities like trillions, etc.
         graph = pynini.union(
             graph_billions
@@ -75,6 +79,7 @@ class OrdinalFst(GraphFst):
             + delete_space_optional
             + graph_hundred_component,
             one_thousand,
+            ordinal_thousand,
             graph_up_to_hundred_component,
         )
 
@@ -84,6 +89,7 @@ class OrdinalFst(GraphFst):
             + pynini.difference(NEMO_DIGIT, "0")
             + pynini.closure(NEMO_DIGIT)
             + "-" + pynini.closure(NEMO_CHAR)
+            + pynini.closure(pynutil.delete(pynini.union("0")))
         )
 
         final_graph = pynutil.insert("integer: \"") + self.graph + pynutil.insert("\"")
