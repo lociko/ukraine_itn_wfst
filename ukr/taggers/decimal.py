@@ -55,7 +55,7 @@ class DecimalFst(GraphFst):
         million = pynini.string_file(get_abs_path("data/numbers/cardinals_million.tsv"))
         thousand = pynini.string_file(get_abs_path("data/numbers/cardinals_thousand.tsv"))
 
-        quantity = pynutil.insert(" quantity: \"") + (billion | million | thousand) + pynutil.insert("\"")
+        quantity = pynutil.insert(" quantity: \"") + (billion | million ) + pynutil.insert("\"")
         optional_graph_quantity = pynini.closure(" " + quantity, 0, 1)
 
         graph_fractional = pynutil.insert("fractional_part: \"") + graph_fractional_part + pynutil.insert("\"")
@@ -63,7 +63,7 @@ class DecimalFst(GraphFst):
 
         self.graph = graph_integer + delete_space + delimiter + delete_space + graph_fractional + optional_graph_quantity
         self.graph |= graph_integer + delete_space + quantity
-        self.graph |= pynutil.insert("integer_part: \"0\"") + graph_fractional
+        self.graph |= pynutil.insert("integer_part: \"0\" fractional_part: \"") + (tenth | hundreds) + pynutil.insert("\"")
 
         optional_minus_graph = pynini.closure(pynutil.insert("negative: \"true\" ") + pynutil.delete("мінус"), 0, 1)
 

@@ -43,10 +43,6 @@ def test_decimal__optional_delimiter_with_and(spoken, expected):
 @pytest.mark.parametrize('spoken,expected', [
     ("сім десятих", '0.7'),
     ("сім сотих", '0.07'),
-    ("сім тисячних", '0.007'),
-    ("сто двадцять сім тисячних", '0.127'),
-    ("сорок одна тисячних", '0.041'),
-    ("одинадцять тисячних", '0.011'),
     ("точність приладу рівна двом сотим", 'точність приладу рівна 0.02'),
 ])
 def test_decimal__only_fractional(spoken, expected):
@@ -56,8 +52,7 @@ def test_decimal__only_fractional(spoken, expected):
 @pytest.mark.parametrize('spoken,expected', [
     ("мінус п'ять цілих і одна десята мільйона", '-5.1 мільйона'),
     ("п'ять цілих і одна десята мільярдів", '5.1 мільярдів'),
-    ("двадцять п'ять цілих і одна десята тисяч", '25.1 тисяч'),
-    ("двадцять п'ять тисяч", '25 тисяч'),
+    ("двадцять п'ять тисяч", '25000'),
 ])
 def test_decimal__delimiter_with_quantity(spoken, expected):
     assert apply_fst_text(spoken, graph) == expected
@@ -65,7 +60,6 @@ def test_decimal__delimiter_with_quantity(spoken, expected):
 
 @pytest.mark.parametrize('spoken,expected', [
     ("мінус п'ять цілих і одна десята мільйона", 'decimal { negative: "true" integer_part: "5" fractional_part: "1"  quantity: "мільйона" }'),
-    ("двадцять п'ять тисяч", 'decimal { integer_part: "25" quantity: "тисяч" }'),
     ("два і сім десятих", 'decimal { integer_part: "2" fractional_part: "7" }'),
     ("мінус п'ять цілих і дві десятих", 'decimal { negative: "true" integer_part: "5" fractional_part: "2" }'),
 ])

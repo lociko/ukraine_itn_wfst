@@ -14,7 +14,7 @@ from ukr.wfst import apply_fst_text, graph
     ("дві тисячі перший", '2001-й'),
     ("дві тисячі двадцять другого", '2022-го'),
     ("дві тисячі дев'ятнадцятого", '2019-го'),
-    ("двох тисячний", '2000-й'),
+    ("двох тисячний рік", '2000-й рік'),
 ])
 def test_ordinal(spoken, expected):
     assert apply_fst_text(spoken, graph) == expected
