@@ -13,7 +13,7 @@ pip install ukr-itn
 ```python
 from ukr.wfst import graph, apply_fst_text
 
-apply_fst_text("це трапилося дві тисячі девятнадцятого числа", graph)  # це трапилося 2019 числа
+apply_fst_text("це трапилося дві тисячі дев'ятнадцятого числа", graph)  # це трапилося 2019 числа
 apply_fst_text("мінус пять цілих одна десята відсотка", graph)  # -5.1 %
 apply_fst_text("двадцять дві тисячі сто один", graph)  # 22101
 ```
@@ -25,7 +25,7 @@ For more advanced usage you can get json output
 ```python
 from ukr.wfst import json_graph, apply_fst_text
 
-apply_fst_text("це трапилося дві тисячі девятнадцятого числа", json_graph)
+apply_fst_text("це трапилося дві тисячі дев'ятнадцятого числа", json_graph)
 # >>> '[{"word": "це"}, {"word": "трапилося"}, {"ordinal": "2019"}, {"word": "числа"}]' 
 ```
 

@@ -2,8 +2,9 @@ import pynini
 from pynini.lib import pynutil
 
 from ukr.graph_utils import (
-    NEMO_DIGIT,
     GraphFst,
+    NEMO_CHAR,
+    NEMO_DIGIT,
 )
 
 from ukr.taggers.cardinal import CardinalFst
@@ -30,12 +31,12 @@ class OrdinalFst(GraphFst):
         graph_up_to_hundred_component = pynini.union(
             graph_ordinal_teen,
             pynutil.insert("0") + graph_ordinal_digit,
-            graph_ordinal_ties + pynutil.insert("0"),
+            graph_ordinal_ties,
             graph_cardinal_ties + delete_space + graph_ordinal_digit,
         )
 
         graph_hundred_component = graph_cardinal_hundred + delete_space_optional + graph_up_to_hundred_component
-        graph_hundred_component |= graph_ordinal_hundred + pynutil.insert("00")
+        graph_hundred_component |= graph_ordinal_hundred
         graph_hundred_component |= pynutil.insert("0") + graph_up_to_hundred_component
 
         thousands = pynini.string_file(get_abs_path("data/numbers/cardinals_thousand.tsv"))
@@ -48,16 +49,18 @@ class OrdinalFst(GraphFst):
             )
         )
 
+        millions = pynini.string_file(get_abs_path("data/numbers/cardinals_million.tsv"))
         graph_millions = (
             pynini.union(
-                cardinal.graph_hundred_component + delete_space + pynutil.delete("мільйон"),
+                cardinal.graph_hundred_component + delete_space + pynutil.delete(millions),
                 pynutil.insert("000", weight=0.1),
             )
         )
 
+        billions = pynini.string_file(get_abs_path("data/numbers/cardinals_billion.tsv"))
         graph_billions = (
             pynini.union(
-                cardinal.graph_hundred_component + delete_space + pynutil.delete("мільярд"),
+                cardinal.graph_hundred_component + delete_space + pynutil.delete(billions),
                 pynutil.insert("000", weight=0.1),
             )
         )
@@ -70,17 +73,17 @@ class OrdinalFst(GraphFst):
             + delete_space_optional
             + graph_thousands
             + delete_space_optional
-            + (graph_hundred_component | pynutil.insert("000")),
+            + graph_hundred_component,
             one_thousand,
             graph_up_to_hundred_component,
         )
 
         self.graph_zeroth = graph
-        self.graph = graph @ pynini.union(
-            pynini.closure(pynutil.delete(pynini.union("0", ",")))
+        self.graph = graph @ (
+            pynini.closure(pynutil.delete(pynini.union("0")))
             + pynini.difference(NEMO_DIGIT, "0")
-            + pynini.closure(pynini.union(NEMO_DIGIT, ",")),
-            "0",
+            + pynini.closure(NEMO_DIGIT)
+            + "-" + pynini.closure(NEMO_CHAR)
         )
 
         final_graph = pynutil.insert("integer: \"") + self.graph + pynutil.insert("\"")

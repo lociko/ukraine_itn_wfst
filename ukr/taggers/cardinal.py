@@ -97,16 +97,18 @@ class CardinalFst(GraphFst):
             )
         )
 
+        millions = pynini.string_file(get_abs_path("data/numbers/cardinals_million.tsv"))
         graph_millions = (
             pynini.union(
-                graph_hundred_component + delete_space + pynutil.delete("мільйон"),
+                graph_hundred_component + delete_space + pynutil.delete(millions),
                 pynutil.insert("000", weight=0.1),
             )
         )
 
+        billions = pynini.string_file(get_abs_path("data/numbers/cardinals_billion.tsv"))
         graph_billions = (
             pynini.union(
-                graph_hundred_component + delete_space + pynutil.delete("мільярд"),
+                graph_hundred_component + delete_space + pynutil.delete(billions),
                 pynutil.insert("000", weight=0.1),
             )
         )
