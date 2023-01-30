@@ -85,13 +85,17 @@ class OrdinalFst(GraphFst):
 
         self.graph_zeroth = graph
         self.graph = graph @ (
-            pynini.closure(pynutil.delete(pynini.union("0")))
-            + pynini.difference(NEMO_DIGIT, "0")
-            + pynini.closure(NEMO_DIGIT)
-            + "-" + pynini.closure(NEMO_CHAR)
-            + pynini.closure(pynutil.delete(pynini.union("0")))
+                pynini.closure(pynutil.delete(pynini.union("0")))
+                + pynini.difference(NEMO_DIGIT, "0")
+                + pynini.closure(NEMO_DIGIT)
+                + "-" + pynini.closure(NEMO_CHAR)
+                + pynini.closure(pynutil.delete(pynini.union("0")))
         )
 
-        final_graph = pynutil.insert("integer: \"") + self.graph + pynutil.insert("\"")
+        # When we have a single digit, like: first, second, ... - leave it as is
+        final_graph = self.graph @ (pynini.closure(NEMO_DIGIT, 2) + "-" + pynini.closure(NEMO_CHAR))
+
+        final_graph = pynutil.insert("integer: \"") + final_graph + pynutil.insert("\"")
         final_graph = self.add_tokens(final_graph)
+
         self.fst = final_graph

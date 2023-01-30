@@ -139,8 +139,13 @@ class CardinalFst(GraphFst):
         self.graph_up_to_hundred_component = graph_up_to_hundred_component
         self.graph = graph
 
+        self.graph_integer = pynutil.insert("integer_part: \"") + graph + pynutil.insert("\"")
+
         optional_minus_graph = pynini.closure(pynutil.insert("negative: \"true\" ") + pynutil.delete("мінус"), 0, 1)
 
-        final_graph = optional_minus_graph + pynutil.insert("integer: \"") + self.graph + pynutil.insert("\"")
+        # When we have a single digit, like: one, two, three - leave it as is
+        final_graph = graph @ pynini.closure(NEMO_DIGIT, 2)
+
+        final_graph = optional_minus_graph + pynutil.insert("integer: \"") + final_graph + pynutil.insert("\"")
         final_graph = self.add_tokens(final_graph)
         self.fst = final_graph.optimize()

@@ -26,22 +26,15 @@ class MeasureFst(GraphFst):
                 + delete_space
         )
         graph_decimal = (
-                pynutil.delete("decimal {")
-                + delete_space
-                + optional_sign
+                optional_sign
                 + delete_space
                 + decimal.numbers
-                + delete_space
-                + pynutil.delete("}")
         )
         graph_cardinal = (
-                pynutil.delete("cardinal {")
-                + delete_space
-                + optional_sign
+                optional_sign
                 + delete_space
                 + cardinal.numbers
-                + delete_space
-                + pynutil.delete("}")
+
         )
         graph = (graph_cardinal | graph_decimal) + delete_space + pynutil.insert(" ") + unit
         delete_tokens = self.delete_tokens(graph)

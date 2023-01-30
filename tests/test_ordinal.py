@@ -4,7 +4,7 @@ from ukr.wfst import apply_fst_text, graph
 
 
 @pytest.mark.parametrize('spoken,expected', [
-    ("перший", '1-й'),
+    ("перший", 'перший'),
     ("дванадцятий", '12-й'),
     ("двадцятий", '20-й'),
     ("дев'яносто дев'яте", '99-те'),
