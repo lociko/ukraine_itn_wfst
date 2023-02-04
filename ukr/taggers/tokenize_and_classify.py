@@ -3,6 +3,7 @@ from pynini.lib import pynutil
 
 from ukr.graph_utils import delete_space, GraphFst, delete_extra_space
 from ukr.taggers.cardinal import CardinalFst
+from ukr.taggers.date import DateFst
 from ukr.taggers.decimal import DecimalFst
 from ukr.taggers.measure import MeasureFst
 from ukr.taggers.money import MoneyFst
@@ -25,6 +26,7 @@ class ClassifyFst(GraphFst):
         decimal_graph = decimal.fst
 
         measure_graph = MeasureFst(cardinal=cardinal, decimal=decimal).fst
+        date_graph = DateFst(cardinal=cardinal, ordinal=ordinal).fst
         word_graph = WordFst().fst
         money_graph = MoneyFst(cardinal=cardinal, decimal=decimal).fst
 
@@ -34,6 +36,7 @@ class ClassifyFst(GraphFst):
                 | pynutil.add_weight(cardinal_graph, 1.1)
                 | pynutil.add_weight(ordinal_graph, 1.1)
                 | pynutil.add_weight(money_graph, 1.1)
+                | pynutil.add_weight(date_graph, 1.1)
                 | pynutil.add_weight(word_graph, 100)
         )
 
