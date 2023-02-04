@@ -23,7 +23,13 @@ apply_fst_text("двадцять дві тисячі сто один", graph)  #
 ```shell
 echo "це трапилося дві тисячі дев'ятнадцятого числа" | python -m ukr
 ```
+```
+Options:
+  -h, --help     Show this help message and exit
+  -j, --json     Return result as JSON
+  -v, --verbose  Print original input and normalized to compare
 
+```
 Will return `це трапилося 2019-го числа`
 
 ### JSON output
