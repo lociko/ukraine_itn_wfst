@@ -32,9 +32,10 @@ class DateFst(GraphFst):
         )
 
         graph_dmy = day + delete_extra_space + month + delete_extra_space + year
+        graph_my = month + delete_extra_space + year
         graph_dm = day + delete_extra_space + month
 
-        final_graph = graph_dmy | graph_dm
+        final_graph = graph_dmy | graph_my | graph_dm | year
 
         delete_tokens = self.delete_tokens(final_graph)
         self.fst = delete_tokens.optimize()
