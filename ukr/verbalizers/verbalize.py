@@ -1,4 +1,5 @@
 from ukr.graph_utils import GraphFst
+from ukr.verbalizers.time import TimeFst
 from ukr.verbalizers.cardinal import CardinalFst
 from ukr.verbalizers.date import DateFst
 from ukr.verbalizers.decimal import DecimalFst
@@ -21,10 +22,12 @@ class VerbalizeFst(GraphFst):
         self.measure = MeasureFst(decimal=self.decimal, cardinal=self.cardinal)
         self.money = MoneyFst(decimal=self.decimal)
         self.date = DateFst()
+        self.time = TimeFst()
         self.word = WordFst()
 
         graph = (
-                self.date.fst
+                self.time.fst
+                | self.date.fst
                 | self.money.fst
                 | self.measure.fst
                 | self.ordinal.fst
@@ -39,6 +42,7 @@ class VerbalizeFst(GraphFst):
         graph = (
                 self.money.as_json()
                 | self.measure.as_json()
+                | self.time.as_json()
                 | self.date.as_json()
                 | self.ordinal.as_json()
                 | self.decimal.as_json()

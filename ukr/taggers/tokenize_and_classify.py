@@ -8,6 +8,7 @@ from ukr.taggers.decimal import DecimalFst
 from ukr.taggers.measure import MeasureFst
 from ukr.taggers.money import MoneyFst
 from ukr.taggers.ordinal import OrdinalFst
+from ukr.taggers.time import TimeFst
 from ukr.taggers.word import WordFst
 
 
@@ -27,6 +28,7 @@ class ClassifyFst(GraphFst):
 
         measure_graph = MeasureFst(cardinal=cardinal, decimal=decimal).fst
         date_graph = DateFst(cardinal=cardinal, ordinal=ordinal).fst
+        time_graph = TimeFst(cardinal=cardinal, ordinal=ordinal).fst
         word_graph = WordFst().fst
         money_graph = MoneyFst(cardinal=cardinal, decimal=decimal).fst
 
@@ -37,6 +39,7 @@ class ClassifyFst(GraphFst):
                 | pynutil.add_weight(ordinal_graph, 1.1)
                 | pynutil.add_weight(money_graph, 1.1)
                 | pynutil.add_weight(date_graph, 1.1)
+                | pynutil.add_weight(time_graph, 1.1)
                 | pynutil.add_weight(word_graph, 100)
         )
 

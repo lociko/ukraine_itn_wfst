@@ -35,6 +35,7 @@ class OrdinalFst(GraphFst):
             graph_ordinal_ties,
             graph_cardinal_ties + delete_space + graph_ordinal_digit,
         )
+        self.graph_up_to_hundred_component = graph_up_to_hundred_component
 
         graph_hundred_component = graph_cardinal_hundred + delete_space_optional + graph_up_to_hundred_component
         graph_hundred_component |= graph_ordinal_hundred
