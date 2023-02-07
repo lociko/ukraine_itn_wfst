@@ -1,6 +1,6 @@
 import pytest
 
-from ukr.wfst import apply_fst_text, graph
+from ukr.wfst import normalize
 
 
 @pytest.mark.parametrize('spoken,expected', [
@@ -18,7 +18,7 @@ from ukr.wfst import apply_fst_text, graph
     ("тисячу дванадцятий", '1012-й'),
 ])
 def test_ordinal(spoken, expected):
-    assert apply_fst_text(spoken, graph) == expected
+    assert normalize(spoken) == expected
 
 
 @pytest.mark.parametrize('spoken,expected', [
@@ -26,4 +26,4 @@ def test_ordinal(spoken, expected):
     ('ти народилася двадцять першого числа чи двадцять восьмого', 'ти народилася 21-го числа чи 28-го'),
 ])
 def test_ordinal_with_other_words(spoken, expected):
-    assert apply_fst_text(spoken, graph) == expected
+    assert normalize(spoken) == expected

@@ -1,6 +1,6 @@
 import pytest
 
-from ukr.wfst import apply_fst_text, graph
+from ukr.wfst import normalize
 
 
 @pytest.mark.parametrize("spoken,expected", [
@@ -18,4 +18,4 @@ from ukr.wfst import apply_fst_text, graph
     ("тридцять тисяч сто одна гривень", '₴30101'),
 ])
 def test_money(spoken, expected):
-    assert apply_fst_text(spoken, graph) == expected
+    assert normalize(spoken) == expected

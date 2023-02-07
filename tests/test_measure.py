@@ -1,6 +1,6 @@
 import pytest
 
-from ukr.wfst import apply_fst_text, graph
+from ukr.wfst import normalize
 
 
 @pytest.mark.parametrize("spoken,expected", [
@@ -11,4 +11,4 @@ from ukr.wfst import apply_fst_text, graph
     ("сто відсотків", '100 %'),
 ])
 def test_percent(spoken, expected):
-    assert apply_fst_text(spoken, graph) == expected
+    assert normalize(spoken) == expected

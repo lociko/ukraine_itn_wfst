@@ -2,7 +2,7 @@ import pytest
 
 from ukr.taggers.cardinal import CardinalFst
 from ukr.taggers.decimal import DecimalFst
-from ukr.wfst import apply_fst_text, graph
+from ukr.wfst import normalize, apply_fst_text
 
 
 @pytest.mark.parametrize('spoken,expected', [
@@ -19,7 +19,7 @@ from ukr.wfst import apply_fst_text, graph
     ("тридцять цілих одна сотих", '30.01'),
 ])
 def test_decimal(spoken, expected):
-    assert apply_fst_text(spoken, graph) == expected
+    assert normalize(spoken) == expected
 
 
 @pytest.mark.parametrize('spoken,expected', [
@@ -28,7 +28,7 @@ def test_decimal(spoken, expected):
     ("двадцять п'ять цілих і одна десята", '25.1'),
 ])
 def test_decimal__delimiter_with_and(spoken, expected):
-    assert apply_fst_text(spoken, graph) == expected
+    assert normalize(spoken) == expected
 
 
 @pytest.mark.parametrize('spoken,expected', [
@@ -37,7 +37,7 @@ def test_decimal__delimiter_with_and(spoken, expected):
     ("два і сім тисячних", '2.007'),
 ])
 def test_decimal__optional_delimiter_with_and(spoken, expected):
-    assert apply_fst_text(spoken, graph) == expected
+    assert normalize(spoken) == expected
 
 
 @pytest.mark.parametrize('spoken,expected', [
@@ -46,7 +46,7 @@ def test_decimal__optional_delimiter_with_and(spoken, expected):
     ("точність приладу рівна двом сотим", 'точність приладу рівна 0.02'),
 ])
 def test_decimal__only_fractional(spoken, expected):
-    assert apply_fst_text(spoken, graph) == expected
+    assert normalize(spoken) == expected
 
 
 @pytest.mark.parametrize('spoken,expected', [
@@ -55,7 +55,7 @@ def test_decimal__only_fractional(spoken, expected):
     ("двадцять п'ять тисяч", '25000'),
 ])
 def test_decimal__delimiter_with_quantity(spoken, expected):
-    assert apply_fst_text(spoken, graph) == expected
+    assert normalize(spoken) == expected
 
 
 @pytest.mark.parametrize('spoken,expected', [

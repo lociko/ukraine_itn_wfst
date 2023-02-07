@@ -1,6 +1,6 @@
 import pytest
 
-from ukr.wfst import apply_fst_text, graph
+from ukr.wfst import normalize
 
 
 @pytest.mark.parametrize("spoken,expected", [
@@ -16,4 +16,4 @@ from ukr.wfst import apply_fst_text, graph
 
 ])
 def test_month(spoken, expected):
-    assert apply_fst_text(spoken, graph) == expected
+    assert normalize(spoken) == expected

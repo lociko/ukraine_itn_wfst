@@ -1,6 +1,6 @@
 import pytest
 
-from ukr.wfst import apply_fst_text, graph
+from ukr.wfst import normalize
 
 
 @pytest.mark.parametrize('spoken,expected', [
@@ -32,4 +32,4 @@ from ukr.wfst import apply_fst_text, graph
     ("одна тисяча дев'ятсот сімдесят", '1970'),
 ])
 def test_cardinal(spoken, expected):
-    assert apply_fst_text(spoken, graph) == expected
+    assert normalize(spoken) == expected

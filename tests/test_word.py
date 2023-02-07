@@ -1,7 +1,7 @@
 import json
 import pytest
 
-from ukr.wfst import apply_fst_text, graph, json_graph
+from ukr.wfst import normalize, json_graph, apply_fst_text
 
 
 @pytest.mark.parametrize('spoken,expected', [
@@ -14,7 +14,7 @@ from ukr.wfst import apply_fst_text, graph, json_graph
     ("одна кішка", 'одна кішка'),
 ])
 def test_word(spoken, expected):
-    assert apply_fst_text(spoken, graph) == expected
+    assert normalize(spoken) == expected
 
 
 @pytest.mark.parametrize('spoken,expected', [
