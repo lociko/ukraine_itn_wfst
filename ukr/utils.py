@@ -1,5 +1,6 @@
 import csv
 import os
+import re
 
 
 def get_abs_path(rel_path):
@@ -30,3 +31,29 @@ def load_labels(abs_path):
     label_tsv = open(abs_path)
     labels = list(csv.reader(label_tsv, delimiter="\t"))
     return labels
+
+
+REORDER_PATTERN = r'(?P<second>\w+: ".*?")>> (?P<first>\w+: ".*")'
+
+
+def reorder(tagged_text):
+    """
+    Change the order of tags if required. For example:
+    >>> reorder('tokens { time { minutes: "05">> hours: "11" } }')
+    # tokens { time { hours: "11" minutes: "05"} }
+    """
+    res = []
+    for tag in tagged_text.split('tokens '):
+        match = re.search(REORDER_PATTERN, tag)
+        if match:
+            groups = match.groupdict()
+
+            original = f"{groups['second']}>> {groups['first']}"
+            reordered = f"{groups['first']} {groups['second']}"
+            new = tag.replace(original, reordered)
+
+            res.append(new)
+        else:
+            res.append(tag)
+
+    return 'tokens '.join(res)

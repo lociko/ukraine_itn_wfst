@@ -23,7 +23,6 @@ class TimeFst(GraphFst):
         e.g. за чверть одинадцята -> time { hours: "10" minutes: "45" }
         e.g. п'ять хвилин на дванадцяту -> time { hours: "11" minutes: "05" }
 
-        # TODO: add this features
         e.g. twelve past one -> time { minutes: "12" hours: "1" }
         e.g. two o clock a m -> time { hours: "2" suffix: "a.m." }
         e.g. quarter past two -> time { hours: "2" minutes: "15" }
@@ -57,8 +56,11 @@ class TimeFst(GraphFst):
 
         graph_hm = graph_hours + delete_extra_space + graph_minutes
 
+        # NOTE: we use here special notation >> which will be processed after FST
+        # The >> means move the current token to one position to right.
+
         # п'ять хвилин на дванадцяту -> time { hours: "11" minutes: "05" }
-        graph_mh = graph_minutes + pynutil.delete(" на ") + pynutil.insert(" hours: \"") + to_hour_graph + pynutil.insert("\"")
+        graph_mh = graph_minutes + pynutil.insert(">>") + pynutil.delete(" на ") + pynutil.insert(" hours: \"") + to_hour_graph + pynutil.insert("\"")
 
         final_graph = graph_hm | graph_mh | graph_half_hour | graph_to_quarter_hour | graph_from_quarter_hour
         final_graph = self.add_tokens(final_graph.optimize())

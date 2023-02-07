@@ -1,6 +1,7 @@
 import pynini
 
 from ukr.taggers.tokenize_and_classify import ClassifyFst
+from ukr.utils import reorder
 from ukr.verbalizers.verbalize_final import VerbalizeFinalFst
 
 
@@ -43,3 +44,20 @@ verbalizeFinalFst = VerbalizeFinalFst()
 
 graph = pynini.compose(classifyFst.fst, verbalizeFinalFst.fst).optimize()
 json_graph = pynini.compose(classifyFst.fst, verbalizeFinalFst.as_json()).optimize()
+
+
+def normalize(text, json=False) -> str:
+    """
+    Apply Inverse Text Normalization (ITN) for the given text
+
+    :param text: given text
+    :param json: if True result would be in json
+    :return: return normalized text
+    """
+    classified = apply_fst_text(text, classifyFst.fst)
+    classified = reorder(classified)
+
+    if json:
+        return apply_fst_text(classified, verbalizeFinalFst.as_json())
+    else:
+        return apply_fst_text(classified, verbalizeFinalFst.fst)

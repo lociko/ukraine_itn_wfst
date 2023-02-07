@@ -1,6 +1,6 @@
 import pytest
 
-from ukr.wfst import apply_fst_text, graph
+from ukr.wfst import normalize
 
 
 @pytest.mark.parametrize("spoken,expected", [
@@ -15,4 +15,4 @@ from ukr.wfst import apply_fst_text, graph
     ("п'ять хвилин на дванадцяту", '11:05'),
 ])
 def test_time(spoken, expected):
-    assert apply_fst_text(spoken, graph) == expected
+    assert normalize(spoken) == expected
