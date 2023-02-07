@@ -11,11 +11,11 @@ pip install ukr-itn
 ## Usage
 
 ```python
-from ukr.wfst import graph, apply_fst_text
+from ukr.wfst import normalize
 
-apply_fst_text("це трапилося дві тисячі дев'ятнадцятого числа", graph)  # це трапилося 2019 числа
-apply_fst_text("мінус пять цілих одна десята відсотка", graph)  # -5.1 %
-apply_fst_text("двадцять дві тисячі сто один", graph)  # 22101
+normalize("це трапилося дві тисячі дев'ятнадцятого числа")  # це трапилося 2019 числа
+normalize("мінус пять цілих одна десята відсотка")  # -5.1 %
+normalize("двадцять дві тисячі сто один")  # 22101
 ```
 
 ### From command line
@@ -23,6 +23,7 @@ apply_fst_text("двадцять дві тисячі сто один", graph)  #
 ```shell
 echo "це трапилося дві тисячі дев'ятнадцятого числа" | python -m ukr
 ```
+
 ```
 Options:
   -h, --help     Show this help message and exit
@@ -30,6 +31,7 @@ Options:
   -v, --verbose  Print original input and normalized to compare
 
 ```
+
 Will return `це трапилося 2019-го числа`
 
 ### JSON output
@@ -37,9 +39,9 @@ Will return `це трапилося 2019-го числа`
 For more advanced usage you can get json output
 
 ```python
-from ukr.wfst import json_graph, apply_fst_text
+from ukr.wfst import normalize
 
-apply_fst_text("це трапилося дві тисячі дев'ятнадцятого числа", json_graph)
+normalize("це трапилося дві тисячі дев'ятнадцятого числа", json=True)
 # >>> '[{"word": "це"}, {"word": "трапилося"}, {"ordinal": "2019"}, {"word": "числа"}]' 
 ```
 

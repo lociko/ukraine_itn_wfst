@@ -1,7 +1,7 @@
 import argparse
 import sys
 
-from ukr.wfst import graph, json_graph, apply_fst_text
+from ukr.wfst import normalize
 
 parser = argparse.ArgumentParser(
     usage="echo \"це трапилося дев'ятнадцятого числа\" | python -m urk"
@@ -12,11 +12,9 @@ parser.add_argument('-v', '--verbose', action='store_true', help='Print original
 args = parser.parse_args()
 
 if args.inverse:
-    graph = graph.invert()
-
-main_graph = json_graph if args.json else graph
+    raise ValueError("'--inverse' option not implement yet")
 
 for line in sys.stdin:
-    print(apply_fst_text(line.strip(), main_graph))
+    print(normalize(line.strip(), args.json))
     if args.verbose:
         print(line)
