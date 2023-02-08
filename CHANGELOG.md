@@ -1,5 +1,20 @@
 # Changelog
 
+### v0.1.8
+
+- Added TIME class, some examples:
+    - `"сьома година двадцять п'ять хвилин"` -> `'07:25'`
+    - `"о пів на десяту"` -> `'09:30'`
+    - `"пів на третю"` -> `'02:30'`
+    - `"чверть на одинадцяту"` -> `'10:15'`
+    - `"за чверть одинадцята"` -> `'10:45'`
+    - `"п'ять хвилин на дванадцяту"` -> `'11:05'`
+    - `"дванадцята нуль нуль"` -> `'12:00'`
+    - `"одинадцята нуль шість"` -> `'11:06'`
+    - `"шоста сорок три"` -> `'06:43'`
+- Defined new method `normalize` which should be used istead of `apply_fst_text` in production code.
+  The reason is we need additional code to process some non-deterministic cases like for time class (for example minutes goes before hours).
+
 ### v0.1.7
 
 - Added DATE class:
