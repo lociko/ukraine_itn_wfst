@@ -34,16 +34,18 @@ class TimeFst(GraphFst):
         hours = pynini.string_file(get_abs_path("data/time/hours.tsv"))
         minutes = pynini.string_file(get_abs_path("data/time/minutes.tsv"))
         to_hour = pynini.string_file(get_abs_path("data/time/to_hour.tsv"))
+        zeros = cardinal.graph_zero
 
         hours_ordinal = ordinal.graph_up_to_hundred_component
         hours_ordinal = hours_ordinal @ (pynini.closure(NEMO_DIGIT) + pynutil.delete(pynini.union("-") + pynini.closure(NEMO_CHAR)))
-        graph_hours = hours_ordinal + delete_space + pynutil.delete(hours)
+
+        graph_hours = hours_ordinal + delete_space + pynini.closure(pynutil.delete(hours), 0, 1)
         graph_hours = pynutil.insert("hours: \"") + graph_hours + pynutil.insert("\"")
 
-        graph_minutes = cardinal.graph_up_to_hundred_component + delete_space + pynutil.delete(minutes)
-        graph_minutes = pynutil.insert("minutes: \"") + graph_minutes + pynutil.insert("\"")
+        minutes_cardinal = cardinal.graph_up_to_hundred_component + delete_space + pynini.closure(pynutil.delete(minutes), 0, 1)
+        graph_minutes = pynutil.insert("minutes: \"") + minutes_cardinal + pynutil.insert("\"")
 
-        graph_half_hour = pynutil.delete("о пів на ") + hours_ordinal
+        graph_half_hour = pynini.closure(pynutil.delete("о "), 0, 1) + pynutil.delete("пів на ") + hours_ordinal
         graph_half_hour = graph_half_hour @ to_hour.invert()
         graph_half_hour = pynutil.insert("hours: \"") + graph_half_hour + pynutil.insert("\" minutes: \"30\"")
 
@@ -62,7 +64,14 @@ class TimeFst(GraphFst):
         # п'ять хвилин на дванадцяту -> time { hours: "11" minutes: "05" }
         graph_mh = graph_minutes + pynutil.insert(">>") + pynutil.delete(" на ") + pynutil.insert(" hours: \"") + to_hour_graph + pynutil.insert("\"")
 
-        final_graph = graph_hm | graph_mh | graph_half_hour | graph_to_quarter_hour | graph_from_quarter_hour
+        # дванадцята нуль нуль ->  time { hours: "12" minutes: "00" }
+        graph_hzz = graph_hours + delete_space
+        graph_hzz += pynini.union(
+            pynutil.insert(" minutes: \"") + zeros + delete_space + zeros + pynutil.insert("\""),
+            pynutil.insert(" minutes: \"") + zeros + delete_space + cardinal.graph_digit + pynutil.insert("\""),
+        )
+
+        final_graph = graph_hm | graph_mh | graph_half_hour | graph_to_quarter_hour | graph_from_quarter_hour | graph_hzz
         final_graph = self.add_tokens(final_graph.optimize())
 
         self.fst = final_graph.optimize()
