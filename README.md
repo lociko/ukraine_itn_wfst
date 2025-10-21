@@ -68,3 +68,39 @@ apply_fst_text('measure { decimal { negative: "true" integer_part: "5" fractiona
 ```
 
 will return `-5.1 %`
+
+## Load Session Context to API
+
+For new users or when sharing context across Claude Code sessions, you can load the SESSION.txt file to the Anthropic API. This file contains comprehensive information about the project environment, processes, and structure.
+
+### Uploading the SESSION.txt file
+
+```bash
+export ANTHROPIC_API_KEY="your-api-key-here"
+
+curl -X POST "https://api.anthropic.com/v1/files" \
+  -H "x-api-key: $ANTHROPIC_API_KEY" \
+  -H "anthropic-version: 2023-06-01" \
+  -H "anthropic-beta: files-api-2025-04-14" \
+  -F "file=@SESSION.txt"
+```
+
+### Verifying the upload
+
+To verify the file was uploaded successfully:
+
+```bash
+curl "https://api.anthropic.com/v1/files" \
+  -H "x-api-key: $ANTHROPIC_API_KEY" \
+  -H "anthropic-version: 2023-06-01" \
+  -H "anthropic-beta: files-api-2025-04-14"
+```
+
+The SESSION.txt file contains:
+- Project README content
+- Environment variables
+- Running processes
+- Project file structure
+- Claude Code settings (if available)
+
+This is particularly useful for maintaining context across different Claude Code sessions or when collaborating with others on the project.

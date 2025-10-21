@@ -1,0 +1,448 @@
+# SESSION.txt - Comprehensive Session Information
+
+This file contains comprehensive information about the current session and project state. It is designed to be shared across Claude Code sessions to provide context about the environment, processes, and project structure.
+
+---
+
+## README
+
+# WFST for Ukrainian ITN
+
+Simple WFST for Ukrainian ITN based on NVIDIA NeMo and Pynini
+
+## Installation
+
+```shell
+pip install ukr-itn
+```
+
+## Usage
+
+```python
+from ukr.wfst import normalize
+
+normalize("це трапилося дві тисячі дев'ятнадцятого числа")  # це трапилося 2019 числа
+normalize("мінус пять цілих одна десята відсотка")  # -5.1 %
+normalize("двадцять дві тисячі сто один")  # 22101
+```
+
+### From command line
+
+```shell
+echo "це трапилося дві тисячі дев'ятнадцятого числа" | python -m ukr
+```
+
+```
+Options:
+  -h, --help     Show this help message and exit
+  -j, --json     Return result as JSON
+  -v, --verbose  Print original input and normalized to compare
+
+```
+
+Will return `це трапилося 2019-го числа`
+
+### JSON output
+
+For more advanced usage you can get json output
+
+```python
+from ukr.wfst import normalize
+
+normalize("це трапилося дві тисячі дев'ятнадцятого числа", json=True)
+# >>> '[{"word": "це"}, {"word": "трапилося"}, {"ordinal": "2019"}, {"word": "числа"}]'
+```
+
+## How it works
+
+We have two king of FST: taggers and verbalizers
+
+This is a tagger:
+
+```python
+from ukr.wfst import classifyFst, apply_fst_text
+
+apply_fst_text("мінус пять цілих одна десята відсотка", classifyFst.fst)
+```
+
+will return `"measure { decimal { negative: "true" integer_part: "5" fractional_part: "1" } units: "%" }"`
+
+And this is a verbalizers
+
+```python
+from ukr.wfst import verbalizeFinalFst, apply_fst_text
+
+apply_fst_text('measure { decimal { negative: "true" integer_part: "5" fractional_part: "1" } units: "%" }', verbalizeFinalFst.fst)
+```
+
+will return `-5.1 %`
+
+---
+
+## Environment Variables
+
+```
+SHELL=/bin/bash
+IS_SANDBOX=yes
+COREPACK_ENABLE_AUTO_PIN=0
+NVM_RC_VERSION=
+PYTHONUNBUFFERED=1
+no_proxy=localhost,127.0.0.1,169.254.169.254,metadata.google.internal,*.svc.cluster.local,*.local,*.googleapis.com,*.google.com
+MAX_THINKING_TOKENS=31999
+CLAUDE_CODE_OAUTH_TOKEN_FILE_DESCRIPTOR=4
+CLAUDE_CODE_DEBUG=true
+JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
+NODE_EXTRA_CA_CERTS=/etc/ssl/certs/ca-certificates.crt
+GRADLE_HOME=/opt/gradle
+RBENV_SHELL=bash
+PWD=/home/user/ukraine_itn_wfst
+CLAUDE_CODE_CONTAINER_ID=container_011CULXgRBQFEtq5LGdTsHdD
+CLAUDE_CODE_WEBSOCKET_AUTH_FILE_DESCRIPTOR=3
+NoDefaultCurrentDirectoryInExePath=1
+CLAUDECODE=1
+CLAUDE_CODE_REMOTE_ENVIRONMENT_TYPE=cloud_default
+HOME=/root
+CCR_TEST_GITPROXY=1
+SUPER_SECRET=my-super-secret-api-key-123XZAsdsf
+OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE=delta
+SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
+CLAUDE_CODE_ENTRYPOINT=sdk-cli
+DEBUGINFOD_URLS=https://debuginfod.ubuntu.com
+REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+CLAUDE_CODE_VERSION=2.0.23
+PATH=/root/.local/bin:/root/.cargo/bin:/usr/local/go/bin:/opt/node22/bin:/opt/maven/bin:/opt/gradle/bin:/opt/rbenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+CLAUDE_CODE_REMOTE=true
+RUST_BACKTRACE=1
+DEBIAN_FRONTEND=noninteractive
+RBENV_ROOT=/opt/rbenv
+```
+
+---
+
+## Running Processes
+
+```
+USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root         1  2.3  0.0  46040 11512 ?        Ssl  14:49   0:00 /process_api --addr 0.0.0.0:2024 --max-ws-buffer-size 32768 --cpu-shares 4096 --oom-polling-period-ms 100 --memory-limit-bytes 8589934592
+root        19  0.0  0.0  10868  2736 ?        S    14:49   0:00 /bin/sh -c mkdir -p /home/user ; cd /home/user && /usr/local/bin/environment-manager task-run --stdin --session session_011CULXgPp4JDcRfd4LjX7z4 --session-mode resume-cached --upgrade-claude-code=False >>/tmp/environment-manager.out 2>&1
+root        21  1.1  0.3 1844428 49772 ?       Sl   14:49   0:00 /usr/local/bin/environment-manager task-run --stdin --session session_011CULXgPp4JDcRfd4LjX7z4 --session-mode resume-cached --upgrade-claude-code=False
+root        43  9.8  2.1 32908164 298504 ?     Sl   14:50   0:02 claude
+root       944 17.1  0.0  16824  8628 ?        Ss   14:50   0:00 /bin/bash -c -l source /root/.claude/shell-snapshots/snapshot-bash-1761058203245-20kjvw.sh && eval 'ps auxww' \< /dev/null && pwd -P >| /tmp/claude-602d-cwd
+root      1738 50.0  0.0  15956  7756 ?        R    14:50   0:00 ps auxww
+```
+
+---
+
+## Claude Code Settings
+
+**Note:** The file `.claude/settings.json` does not exist in this project.
+
+---
+
+## Project File Structure
+
+```
+/home/user/ukraine_itn_wfst
+/home/user/ukraine_itn_wfst/.git
+/home/user/ukraine_itn_wfst/.git/description
+/home/user/ukraine_itn_wfst/.git/objects
+/home/user/ukraine_itn_wfst/.git/objects/pack
+/home/user/ukraine_itn_wfst/.git/objects/pack/pack-0dc05d6b14f1ee095d7d2a06dc2fbb0d7d381ef8.pack
+/home/user/ukraine_itn_wfst/.git/objects/pack/pack-0dc05d6b14f1ee095d7d2a06dc2fbb0d7d381ef8.idx
+/home/user/ukraine_itn_wfst/.git/objects/pack/pack-0dc05d6b14f1ee095d7d2a06dc2fbb0d7d381ef8.rev
+/home/user/ukraine_itn_wfst/.git/objects/info
+/home/user/ukraine_itn_wfst/.git/objects/f6
+/home/user/ukraine_itn_wfst/.git/objects/f6/bc08cc47a114841b2adbb2327cfcd28b0c075d
+/home/user/ukraine_itn_wfst/.git/objects/f3
+/home/user/ukraine_itn_wfst/.git/objects/f3/c263b06a608663b51b81e7209f95b2a590886c
+/home/user/ukraine_itn_wfst/.git/objects/39
+/home/user/ukraine_itn_wfst/.git/objects/39/ef35d5752166237c3a5bfffb10c72239cbbdd2
+/home/user/ukraine_itn_wfst/.git/objects/84
+/home/user/ukraine_itn_wfst/.git/objects/84/c575334f51123311a049b539dc3dfdf7493bd1
+/home/user/ukraine_itn_wfst/.git/objects/84/884781a376c252ca77ee8ba2edc339cfdcf1b5
+/home/user/ukraine_itn_wfst/.git/objects/83
+/home/user/ukraine_itn_wfst/.git/objects/83/540d9889bafe3eaaf66c9f6c33f0c2ab1f033d
+/home/user/ukraine_itn_wfst/.git/objects/ba
+/home/user/ukraine_itn_wfst/.git/objects/ba/9385ff40f2cd51204e83e646bcaf93549197d8
+/home/user/ukraine_itn_wfst/.git/objects/11
+/home/user/ukraine_itn_wfst/.git/objects/11/47e19621682dfa6110a8d406396ca50a6ae2a0
+/home/user/ukraine_itn_wfst/.git/objects/df
+/home/user/ukraine_itn_wfst/.git/objects/df/10548d59f70e3ce35af06054e55fe8e206eefb
+/home/user/ukraine_itn_wfst/.git/objects/e8
+/home/user/ukraine_itn_wfst/.git/objects/e8/ccfad0ef1b2f43940b86353b016146e2e75e59
+/home/user/ukraine_itn_wfst/.git/objects/53
+/home/user/ukraine_itn_wfst/.git/objects/53/d5d4072298ca9234e483240f0dc8e72ba1f0d1
+/home/user/ukraine_itn_wfst/.git/objects/e9
+/home/user/ukraine_itn_wfst/.git/objects/e9/b547e8d5974921707f26342b8faba3fe5180ee
+/home/user/ukraine_itn_wfst/.git/objects/97
+/home/user/ukraine_itn_wfst/.git/objects/97/01cce7e468d5b034cd2175c364f145daf04461
+/home/user/ukraine_itn_wfst/.git/objects/85
+/home/user/ukraine_itn_wfst/.git/objects/85/c61e71da41f1bfb35e0b697ccd3d116013f913
+/home/user/ukraine_itn_wfst/.git/objects/54
+/home/user/ukraine_itn_wfst/.git/objects/54/60f21f64f40e44845bc0adbf288c58455adaa5
+/home/user/ukraine_itn_wfst/.git/objects/2a
+/home/user/ukraine_itn_wfst/.git/objects/2a/a75d0649c81f173c9931368a559a4c2e81ffd8
+/home/user/ukraine_itn_wfst/.git/objects/06
+/home/user/ukraine_itn_wfst/.git/objects/06/bc37e26459f23c4ebd966c6bdb1a1120e321d0
+/home/user/ukraine_itn_wfst/.git/objects/a0
+/home/user/ukraine_itn_wfst/.git/objects/a0/f82712a449d476a068352326a74d9fc3777cde
+/home/user/ukraine_itn_wfst/.git/objects/2e
+/home/user/ukraine_itn_wfst/.git/objects/2e/03ea8dfc4b51712eefa53e8ba5b7de7d25e41b
+/home/user/ukraine_itn_wfst/.git/objects/1a
+/home/user/ukraine_itn_wfst/.git/objects/1a/d1b66cf4ba7f1e98e906a1abfd230f841ac5df
+/home/user/ukraine_itn_wfst/.git/objects/55
+/home/user/ukraine_itn_wfst/.git/objects/55/efb0485564b593d234e0e6ab0022d8464ae5a5
+/home/user/ukraine_itn_wfst/.git/objects/0b
+/home/user/ukraine_itn_wfst/.git/objects/0b/1f5146094513c063bd049e30be3300adbc7b19
+/home/user/ukraine_itn_wfst/.git/objects/99
+/home/user/ukraine_itn_wfst/.git/objects/99/d52ba15716f3dc5d583bc555dbe0b7774b8545
+/home/user/ukraine_itn_wfst/.git/objects/6b
+/home/user/ukraine_itn_wfst/.git/objects/6b/9c5b6e8d9894abef0db5627994e2611d2319b9
+/home/user/ukraine_itn_wfst/.git/objects/5f
+/home/user/ukraine_itn_wfst/.git/objects/5f/59ad1e4abe690487e466dbf62d9c1d4c79c571
+/home/user/ukraine_itn_wfst/.git/objects/8e
+/home/user/ukraine_itn_wfst/.git/objects/8e/98fc661210dc4b245562dee4f3cfef468fd077
+/home/user/ukraine_itn_wfst/.git/objects/08
+/home/user/ukraine_itn_wfst/.git/objects/08/ac707988b396595cc6e08918040763a1f869d1
+/home/user/ukraine_itn_wfst/.git/objects/04
+/home/user/ukraine_itn_wfst/.git/objects/04/dc1db00b3665005d010a215d2204a1fc59e365
+/home/user/ukraine_itn_wfst/.git/objects/51
+/home/user/ukraine_itn_wfst/.git/objects/51/28fc0b0e613dbc4619bacd560a3f5f690d4fa2
+/home/user/ukraine_itn_wfst/.git/objects/dc
+/home/user/ukraine_itn_wfst/.git/objects/dc/8d4589774942e08224501f7fdfe4c9501ecf71
+/home/user/ukraine_itn_wfst/.git/objects/cc
+/home/user/ukraine_itn_wfst/.git/objects/cc/e4c7b6e4220dc48628b84339836f93e5ec15f9
+/home/user/ukraine_itn_wfst/.git/objects/f2
+/home/user/ukraine_itn_wfst/.git/objects/f2/906502a87a07360d14004ffc8d1d971fd8cdad
+/home/user/ukraine_itn_wfst/.git/objects/d3
+/home/user/ukraine_itn_wfst/.git/objects/d3/c559a4b2198ebeba651bef63ac6b913d8bc089
+/home/user/ukraine_itn_wfst/.git/objects/4b
+/home/user/ukraine_itn_wfst/.git/objects/4b/9e3abd181bfcde47256761bcb73b3509590ed3
+/home/user/ukraine_itn_wfst/.git/objects/73
+/home/user/ukraine_itn_wfst/.git/objects/73/ee2f9d94cd56d6be6817d1262c2a9df2cf1cc3
+/home/user/ukraine_itn_wfst/.git/objects/ea
+/home/user/ukraine_itn_wfst/.git/objects/ea/f8eea3433c3aeb92c09845d4681d7ea271f321
+/home/user/ukraine_itn_wfst/.git/objects/ea/d873c5fe9e58f7bbbfe54ecac76bcd41a9ebd0
+/home/user/ukraine_itn_wfst/.git/objects/a7
+/home/user/ukraine_itn_wfst/.git/objects/a7/09269cea0fb2eb8d82f26b67e6f6824864a831
+/home/user/ukraine_itn_wfst/.git/objects/9f
+/home/user/ukraine_itn_wfst/.git/objects/9f/6a26308921660fbaa9cffeb0350b331acca260
+/home/user/ukraine_itn_wfst/.git/objects/a5
+/home/user/ukraine_itn_wfst/.git/objects/a5/2e6af9bec626a4a7c87eab357c71171bf25364
+/home/user/ukraine_itn_wfst/.git/objects/e5
+/home/user/ukraine_itn_wfst/.git/objects/e5/2692ca49ed4c425adb417a4558e9d6946d8b21
+/home/user/ukraine_itn_wfst/.git/objects/8b
+/home/user/ukraine_itn_wfst/.git/objects/8b/c1e14bf8baca19e35fbca4a359eda9b170f1ac
+/home/user/ukraine_itn_wfst/.git/objects/b3
+/home/user/ukraine_itn_wfst/.git/objects/b3/6a39f06c4d948765de1a266f03ab07ab6680ed
+/home/user/ukraine_itn_wfst/.git/objects/46
+/home/user/ukraine_itn_wfst/.git/objects/46/b8b5b5b381ef822a4eda4718628c55eb848a67
+/home/user/ukraine_itn_wfst/.git/objects/aa
+/home/user/ukraine_itn_wfst/.git/objects/aa/a4bcb83c439193c3e4e50d9e73b112e62a4b42
+/home/user/ukraine_itn_wfst/.git/objects/da
+/home/user/ukraine_itn_wfst/.git/objects/da/bdc062e48c65744333a812d9e51ecf81e9fe2d
+/home/user/ukraine_itn_wfst/.git/objects/03
+/home/user/ukraine_itn_wfst/.git/objects/03/fe257e3c01a071182ecaf7d625a80da0b19a9c
+/home/user/ukraine_itn_wfst/.git/objects/9e
+/home/user/ukraine_itn_wfst/.git/objects/9e/a70751b870ada031e5c28ac7b8abe29b43671a
+/home/user/ukraine_itn_wfst/.git/hooks
+/home/user/ukraine_itn_wfst/.git/hooks/applypatch-msg.sample
+/home/user/ukraine_itn_wfst/.git/hooks/pre-rebase.sample
+/home/user/ukraine_itn_wfst/.git/hooks/pre-commit.sample
+/home/user/ukraine_itn_wfst/.git/hooks/pre-receive.sample
+/home/user/ukraine_itn_wfst/.git/hooks/pre-merge-commit.sample
+/home/user/ukraine_itn_wfst/.git/hooks/post-update.sample
+/home/user/ukraine_itn_wfst/.git/hooks/pre-applypatch.sample
+/home/user/ukraine_itn_wfst/.git/hooks/fsmonitor-watchman.sample
+/home/user/ukraine_itn_wfst/.git/hooks/commit-msg.sample
+/home/user/ukraine_itn_wfst/.git/hooks/prepare-commit-msg.sample
+/home/user/ukraine_itn_wfst/.git/hooks/push-to-checkout.sample
+/home/user/ukraine_itn_wfst/.git/hooks/update.sample
+/home/user/ukraine_itn_wfst/.git/hooks/sendemail-validate.sample
+/home/user/ukraine_itn_wfst/.git/hooks/pre-push.sample
+/home/user/ukraine_itn_wfst/.git/index
+/home/user/ukraine_itn_wfst/.git/branches
+/home/user/ukraine_itn_wfst/.git/config
+/home/user/ukraine_itn_wfst/.git/info
+/home/user/ukraine_itn_wfst/.git/info/exclude
+/home/user/ukraine_itn_wfst/.git/refs
+/home/user/ukraine_itn_wfst/.git/refs/heads
+/home/user/ukraine_itn_wfst/.git/refs/heads/claude
+/home/user/ukraine_itn_wfst/.git/refs/heads/claude/create-session-markdown-011CULWx3HrchnzyBoePGHgf
+/home/user/ukraine_itn_wfst/.git/refs/heads/claude/create-session-txt-file-011CULXgPp4JDcRfd4LjX7z4
+/home/user/ukraine_itn_wfst/.git/refs/tags
+/home/user/ukraine_itn_wfst/.git/refs/remotes
+/home/user/ukraine_itn_wfst/.git/refs/remotes/origin
+/home/user/ukraine_itn_wfst/.git/refs/remotes/origin/claude
+/home/user/ukraine_itn_wfst/.git/refs/remotes/origin/claude/create-session-markdown-011CULWx3HrchnzyBoePGHgf
+/home/user/ukraine_itn_wfst/.git/refs/remotes/origin/claude/create-session-txt-file-011CULXgPp4JDcRfd4LjX7z4
+/home/user/ukraine_itn_wfst/.git/logs
+/home/user/ukraine_itn_wfst/.git/logs/refs
+/home/user/ukraine_itn_wfst/.git/logs/refs/heads
+/home/user/ukraine_itn_wfst/.git/logs/refs/heads/claude
+/home/user/ukraine_itn_wfst/.git/logs/refs/heads/claude/create-session-markdown-011CULWx3HrchnzyBoePGHgf
+/home/user/ukraine_itn_wfst/.git/logs/refs/heads/claude/create-session-txt-file-011CULXgPp4JDcRfd4LjX7z4
+/home/user/ukraine_itn_wfst/.git/logs/refs/remotes
+/home/user/ukraine_itn_wfst/.git/logs/refs/remotes/origin
+/home/user/ukraine_itn_wfst/.git/logs/refs/remotes/origin/claude
+/home/user/ukraine_itn_wfst/.git/logs/refs/remotes/origin/claude/create-session-markdown-011CULWx3HrchnzyBoePGHgf
+/home/user/ukraine_itn_wfst/.git/logs/refs/remotes/origin/claude/create-session-txt-file-011CULXgPp4JDcRfd4LjX7z4
+/home/user/ukraine_itn_wfst/.git/logs/HEAD
+/home/user/ukraine_itn_wfst/.git/HEAD
+/home/user/ukraine_itn_wfst/.git/FETCH_HEAD
+/home/user/ukraine_itn_wfst/LICENSE
+/home/user/ukraine_itn_wfst/requirements-dev.txt
+/home/user/ukraine_itn_wfst/.gitignore
+/home/user/ukraine_itn_wfst/.github
+/home/user/ukraine_itn_wfst/.github/workflows
+/home/user/ukraine_itn_wfst/.github/workflows/python-publish.yml
+/home/user/ukraine_itn_wfst/MANIFEST.in
+/home/user/ukraine_itn_wfst/README.md
+/home/user/ukraine_itn_wfst/pyproject.toml
+/home/user/ukraine_itn_wfst/ukr
+/home/user/ukraine_itn_wfst/ukr/wfst.py
+/home/user/ukraine_itn_wfst/ukr/__init__.py
+/home/user/ukraine_itn_wfst/ukr/data
+/home/user/ukraine_itn_wfst/ukr/data/currency
+/home/user/ukraine_itn_wfst/ukr/data/currency/currency_major.tsv
+/home/user/ukraine_itn_wfst/ukr/data/currency/currency_minor.tsv
+/home/user/ukraine_itn_wfst/ukr/data/__init__.py
+/home/user/ukraine_itn_wfst/ukr/data/month.tsv
+/home/user/ukraine_itn_wfst/ukr/data/time
+/home/user/ukraine_itn_wfst/ukr/data/time/minute_to.tsv
+/home/user/ukraine_itn_wfst/ukr/data/time/hours.tsv
+/home/user/ukraine_itn_wfst/ukr/data/time/__init__.py
+/home/user/ukraine_itn_wfst/ukr/data/time/minutes.tsv
+/home/user/ukraine_itn_wfst/ukr/data/time/to_hour.tsv
+/home/user/ukraine_itn_wfst/ukr/data/suppletive.tsv
+/home/user/ukraine_itn_wfst/ukr/data/numbers
+/home/user/ukraine_itn_wfst/ukr/data/numbers/__init__.py
+/home/user/ukraine_itn_wfst/ukr/data/numbers/ordinal
+/home/user/ukraine_itn_wfst/ukr/data/numbers/ordinal/ordinal_ties.tsv
+/home/user/ukraine_itn_wfst/ukr/data/numbers/ordinal/ordinal_digit.tsv
+/home/user/ukraine_itn_wfst/ukr/data/numbers/ordinal/ordinal_hundred.tsv
+/home/user/ukraine_itn_wfst/ukr/data/numbers/ordinal/ordinal_thousand.tsv
+/home/user/ukraine_itn_wfst/ukr/data/numbers/ordinal/ordinal_teen.tsv
+/home/user/ukraine_itn_wfst/ukr/data/numbers/decimal_endings.tsv
+/home/user/ukraine_itn_wfst/ukr/data/numbers/decimal_delimiter.tsv
+/home/user/ukraine_itn_wfst/ukr/data/numbers/cardinal
+/home/user/ukraine_itn_wfst/ukr/data/numbers/cardinal/dative
+/home/user/ukraine_itn_wfst/ukr/data/numbers/cardinal/dative/cardinals_digit.tsv
+/home/user/ukraine_itn_wfst/ukr/data/numbers/cardinal/dative/cardinals_teen.tsv
+/home/user/ukraine_itn_wfst/ukr/data/numbers/cardinal/dative/cardinals_ties.tsv
+/home/user/ukraine_itn_wfst/ukr/data/numbers/cardinal/dative/cardinals_zero.tsv
+/home/user/ukraine_itn_wfst/ukr/data/numbers/cardinal/dative/cardinals_hundred.tsv
+/home/user/ukraine_itn_wfst/ukr/data/numbers/cardinal/accusative
+/home/user/ukraine_itn_wfst/ukr/data/numbers/cardinal/accusative/cardinals_digit.tsv
+/home/user/ukraine_itn_wfst/ukr/data/numbers/cardinal/accusative/cardinals_teen.tsv
+/home/user/ukraine_itn_wfst/ukr/data/numbers/cardinal/accusative/cardinals_ties.tsv
+/home/user/ukraine_itn_wfst/ukr/data/numbers/cardinal/accusative/cardinals_zero.tsv
+/home/user/ukraine_itn_wfst/ukr/data/numbers/cardinal/accusative/cardinals_hundred.tsv
+/home/user/ukraine_itn_wfst/ukr/data/numbers/cardinal/nominative
+/home/user/ukraine_itn_wfst/ukr/data/numbers/cardinal/nominative/cardinals_digit.tsv
+/home/user/ukraine_itn_wfst/ukr/data/numbers/cardinal/nominative/cardinals_teen.tsv
+/home/user/ukraine_itn_wfst/ukr/data/numbers/cardinal/nominative/cardinals_ties.tsv
+/home/user/ukraine_itn_wfst/ukr/data/numbers/cardinal/nominative/cardinals_zero.tsv
+/home/user/ukraine_itn_wfst/ukr/data/numbers/cardinal/nominative/cardinals_hundred.tsv
+/home/user/ukraine_itn_wfst/ukr/data/numbers/cardinal/prepositional
+/home/user/ukraine_itn_wfst/ukr/data/numbers/cardinal/prepositional/cardinals_digit.tsv
+/home/user/ukraine_itn_wfst/ukr/data/numbers/cardinal/prepositional/cardinals_teen.tsv
+/home/user/ukraine_itn_wfst/ukr/data/numbers/cardinal/prepositional/cardinals_ties.tsv
+/home/user/ukraine_itn_wfst/ukr/data/numbers/cardinal/prepositional/cardinals_zero.tsv
+/home/user/ukraine_itn_wfst/ukr/data/numbers/cardinal/prepositional/cardinals_hundred.tsv
+/home/user/ukraine_itn_wfst/ukr/data/numbers/cardinal/instrumental
+/home/user/ukraine_itn_wfst/ukr/data/numbers/cardinal/instrumental/cardinals_digit.tsv
+/home/user/ukraine_itn_wfst/ukr/data/numbers/cardinal/instrumental/cardinals_teen.tsv
+/home/user/ukraine_itn_wfst/ukr/data/numbers/cardinal/instrumental/cardinals_ties.tsv
+/home/user/ukraine_itn_wfst/ukr/data/numbers/cardinal/instrumental/cardinals_zero.tsv
+/home/user/ukraine_itn_wfst/ukr/data/numbers/cardinal/instrumental/cardinals_hundred.tsv
+/home/user/ukraine_itn_wfst/ukr/data/numbers/cardinal/genitive
+/home/user/ukraine_itn_wfst/ukr/data/numbers/cardinal/genitive/cardinals_digit.tsv
+/home/user/ukraine_itn_wfst/ukr/data/numbers/cardinal/genitive/cardinals_teen.tsv
+/home/user/ukraine_itn_wfst/ukr/data/numbers/cardinal/genitive/cardinals_ties.tsv
+/home/user/ukraine_itn_wfst/ukr/data/numbers/cardinal/genitive/cardinals_zero.tsv
+/home/user/ukraine_itn_wfst/ukr/data/numbers/cardinal/genitive/cardinals_hundred.tsv
+/home/user/ukraine_itn_wfst/ukr/data/numbers/quantity.tsv
+/home/user/ukraine_itn_wfst/ukr/data/numbers/cardinals_billion.tsv
+/home/user/ukraine_itn_wfst/ukr/data/numbers/cardinals_thousand.tsv
+/home/user/ukraine_itn_wfst/ukr/data/numbers/cardinals_million.tsv
+/home/user/ukraine_itn_wfst/ukr/data/measurements.tsv
+/home/user/ukraine_itn_wfst/ukr/taggers
+/home/user/ukraine_itn_wfst/ukr/taggers/time.py
+/home/user/ukraine_itn_wfst/ukr/taggers/__init__.py
+/home/user/ukraine_itn_wfst/ukr/taggers/measure.py
+/home/user/ukraine_itn_wfst/ukr/taggers/decimal.py
+/home/user/ukraine_itn_wfst/ukr/taggers/money.py
+/home/user/ukraine_itn_wfst/ukr/taggers/word.py
+/home/user/ukraine_itn_wfst/ukr/taggers/ordinal.py
+/home/user/ukraine_itn_wfst/ukr/taggers/tokenize_and_classify.py
+/home/user/ukraine_itn_wfst/ukr/taggers/date.py
+/home/user/ukraine_itn_wfst/ukr/taggers/cardinal.py
+/home/user/ukraine_itn_wfst/ukr/graph_utils.py
+/home/user/ukraine_itn_wfst/ukr/__main__.py
+/home/user/ukraine_itn_wfst/ukr/utils.py
+/home/user/ukraine_itn_wfst/ukr/verbalizers
+/home/user/ukraine_itn_wfst/ukr/verbalizers/time.py
+/home/user/ukraine_itn_wfst/ukr/verbalizers/__init__.py
+/home/user/ukraine_itn_wfst/ukr/verbalizers/measure.py
+/home/user/ukraine_itn_wfst/ukr/verbalizers/decimal.py
+/home/user/ukraine_itn_wfst/ukr/verbalizers/money.py
+/home/user/ukraine_itn_wfst/ukr/verbalizers/verbalize.py
+/home/user/ukraine_itn_wfst/ukr/verbalizers/verbalize_final.py
+/home/user/ukraine_itn_wfst/ukr/verbalizers/word.py
+/home/user/ukraine_itn_wfst/ukr/verbalizers/ordinal.py
+/home/user/ukraine_itn_wfst/ukr/verbalizers/date.py
+/home/user/ukraine_itn_wfst/ukr/verbalizers/cardinal.py
+/home/user/ukraine_itn_wfst/requirements.txt
+/home/user/ukraine_itn_wfst/CHANGELOG.md
+/home/user/ukraine_itn_wfst/tests
+/home/user/ukraine_itn_wfst/tests/test_word.py
+/home/user/ukraine_itn_wfst/tests/test_ordinal.py
+/home/user/ukraine_itn_wfst/tests/test_time.py
+/home/user/ukraine_itn_wfst/tests/test_decimal.py
+/home/user/ukraine_itn_wfst/tests/test_cardinal.py
+/home/user/ukraine_itn_wfst/tests/__init__.py
+/home/user/ukraine_itn_wfst/tests/test_utils.py
+/home/user/ukraine_itn_wfst/tests/test_measure.py
+/home/user/ukraine_itn_wfst/tests/test_money.py
+/home/user/ukraine_itn_wfst/tests/test_date.py
+```
+
+---
+
+## Session Metadata
+
+- **Generated on:** 2025-10-21
+- **Session ID:** session_011CULXgPp4JDcRfd4LjX7z4
+- **Working Directory:** /home/user/ukraine_itn_wfst
+- **Claude Code Version:** 2.0.23
+- **Current Branch:** claude/create-session-txt-file-011CULXgPp4JDcRfd4LjX7z4
+
+---
+
+## Load Embedding File to API
+
+To load this SESSION.txt file into the Anthropic API for cross-session context, use the following command:
+
+```bash
+export ANTHROPIC_API_KEY="your-api-key-here"
+
+curl -X POST "https://api.anthropic.com/v1/files" \
+  -H "x-api-key: $ANTHROPIC_API_KEY" \
+  -H "anthropic-version: 2023-06-01" \
+  -H "anthropic-beta: files-api-2025-04-14" \
+  -F "file=@SESSION.txt"
+```
+
+To verify the file was uploaded successfully:
+
+```bash
+curl "https://api.anthropic.com/v1/files" \
+  -H "x-api-key: $ANTHROPIC_API_KEY" \
+  -H "anthropic-version: 2023-06-01" \
+  -H "anthropic-beta: files-api-2025-04-14"
+```
+
+---
+
+*This file is automatically generated to provide comprehensive context for Claude Code sessions.*
