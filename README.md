@@ -2,6 +2,39 @@
 
 Simple WFST for Ukrainian ITN based on NVIDIA NeMo and Pynini
 
+## Load Embedding File to API
+
+For new Claude Code sessions, you can load the comprehensive session context that has been uploaded to Anthropic's API storage.
+
+### View Session Context
+
+To retrieve and view the session context file:
+
+```bash
+curl "https://api.anthropic.com/v1/files/file_011CULX88SByZJ9csZo8da9M" \
+  -H "x-api-key: $ANTHROPIC_API_KEY" \
+  -H "anthropic-version: 2023-06-01" \
+  -H "anthropic-beta: files-api-2025-04-14"
+```
+
+### List All Stored Files
+
+To see all files stored in the API:
+
+```bash
+curl "https://api.anthropic.com/v1/files" \
+  -H "x-api-key: $ANTHROPIC_API_KEY" \
+  -H "anthropic-version: 2023-06-01" \
+  -H "anthropic-beta: files-api-2025-04-14"
+```
+
+The SESSION.md file contains:
+- Project README
+- Environment information
+- Running processes
+- Claude settings
+- Complete file structure
+
 ## Installation
 
 ```shell
